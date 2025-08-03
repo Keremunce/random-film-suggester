@@ -31,6 +31,6 @@ In later versions, it will also allow users to **import their own watchlists** a
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/<your-username>/random-film-suggester.git
+   git clone https://github.com/Keremunce/random-film-suggester.git
    cd random-film-suggester
    ```
