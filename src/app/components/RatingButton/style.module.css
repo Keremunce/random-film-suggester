@@ -1,0 +1,19 @@
+.ratingButtonContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    width: max-content;
+    background-color: var(--color-white-10);
+    border-radius: var(--radius-md);
+    padding: var(--space-xs) var(--space-sm);
+    gap: var(--space-xs);
+    color: var(--color-warning-400);
+    backdrop-filter: blur(var(--effect-bg-blur));
+}
+
+.ratingButtonIcon {
+
+}
+
+.ratingButtonText {}
