@@ -1,0 +1,37 @@
+.navbar {
+    background-color: var(--color-surface);
+    color: var(--color-text-primary);
+    padding: var(--space-md);
+}
+
+.navbarContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbarLogo img {
+    width: 50px;
+    height: 50px;
+}
+
+.navbarLinks {
+    display: flex;
+    gap: var(--space-md);
+}
+
+.navbarLink a {
+    text-decoration: none;
+    color: var(--color-gray-200);
+    font: var(--typography-link-regular);
+    transition: color 0.3s;
+}
+
+.navbarLink a:hover {
+    color: var(--color-primary-hover);
+}
+.linkSuggest{
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
