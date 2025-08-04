@@ -4,12 +4,16 @@
     justify-content: center;
     cursor: pointer;
     width: max-content;
-    background-color: var(--color-white-10);
+    background-color: var(--color-black-65);
     border-radius: var(--radius-md);
     padding: var(--space-xs) var(--space-sm);
     gap: var(--space-xs);
     color: var(--color-warning-400);
-    backdrop-filter: blur(var(--effect-bg-blur));
+    backdrop-filter: blur(8px);
+    position: absolute;
+    top: 5%;
+    left: 5%;
+    transition: background-color 0.3s ease, color 0.3s ease
 }
 
 .ratingButtonIcon {

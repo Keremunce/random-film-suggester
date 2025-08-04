@@ -1,53 +1,34 @@
-import { ReactNode } from "react";
 import Image from "next/image";
 import styles from "./style.module.css";
-
-type ButtonProps = {
-	leftIconPath?: string;
-	rightIconPath?: string;
-	value: string;
-	onClick?: () => void;
-	disabled?: boolean;
-};
-
-export const BaseButton = ({
-	leftIconPath,
-	rightIconPath,
-	value,
-	onClick,
-	disabled = false,
-}: ButtonProps) => {
-	return (
-		<div className={styles.basebuttonContainer}>
-			<button onClick={onClick} disabled={disabled}>
-				{leftIconPath && (
-					<Image src={leftIconPath} alt="Left Icon" width={24} height={24} />
-				)}
-				{value}
-				{rightIconPath && (
-					<Image src={rightIconPath} alt="Right Icon" width={24} height={24} />
-				)}
-			</button>
-		</div>
-	);
-};
+import { RatingButton } from "@/app/components/RatingButton";
 
 type MovieCardProps = {
 	title: string;
 	description: string;
 	posterPath: string;
+	variant?: "default" | "addToMyList" | "alreadyWatched";
 	onClick?: () => void;
 };
 
 export const MovieCard = ({
 	title,
-	description,
+	vote,
 	posterPath,
+	variant = "default",
 	onClick,
 }: MovieCardProps) => {
+	const variantStyles = {
+		default: styles.movieCardDefault,
+		addToMyList: styles.movieCardAddToMyList,
+		alreadyWatched: styles.movieCardAlreadyWatched,
+	};
 	return (
-		<div className={styles.movieCardContainer} onClick={onClick}>
-			<Image
+		<div
+			className={`${styles.movieCardContainer} ${variantStyles[variant]}`}
+			onClick={onClick}
+		>
+			<RatingButton rating={vote} />
+			<img
 				src={posterPath}
 				alt={title}
 				width={150}
@@ -55,8 +36,7 @@ export const MovieCard = ({
 				className={styles.movieCardPoster}
 			/>
 			<div className={styles.movieCardContent}>
-				<h3 className={styles.movieCardTitle}>{title}</h3>
-				<p className={styles.movieCardDescription}>{description}</p>
+				<p className={styles.movieCardTitle}>{title}</p>
 			</div>
 		</div>
 	);
