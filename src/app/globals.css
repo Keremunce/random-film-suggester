@@ -110,7 +110,7 @@
   /* Typography */
   --font-family-base: 'Poppins', sans-serif;
 
-   /* Headings */
+  /* Headings */
   --typography-heading-one: 600 64px/80px var(--font-family-base);
   --typography-heading-two: 600 48px/56px var(--font-family-base);
   --typography-heading-three: 600 32px/40px var(--font-family-base);
@@ -146,7 +146,8 @@
   /* Border radius */
   --radius-sm: 4px;
   --radius-md: 8px;
-  --radius-lg: 16px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
 
   /* Layout grid (fluid max-width) */
   --container-max: 1440px;
@@ -166,8 +167,11 @@
 
 
 body {
-  background-color: var(--color-primary-900);
   font: var(--font-body-regular);
+  background:
+    url('/Background.svg') no-repeat center center fixed,
+    var(--color-primary-900);
+  background-size: cover;
 }
 
 .container {
