@@ -167,6 +167,7 @@
 
 
 body {
+  font-family: var(--font-family-base) !important;
   font: var(--font-body-regular);
   background:
     url('/Background.svg') no-repeat center center fixed,

@@ -1,0 +1,35 @@
+.basebuttonContainer {
+/*  */
+}
+
+.basebuttonContainer button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-md);
+    padding: var(--space-md) var(--space-xl);
+    background-color: var(--color-primary-400);
+    color: var(--color-white-100);
+    border: 1px solid var(--color-primary-400);
+    border-radius: var(--radius-lg);
+    font: var(--typography-body-regular);
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+
+.basebuttonContainer button:hover {
+    background-color: var(--color-primary-500);
+    color: var(--color-white-100);
+}
+
+.basebuttonContainer button:active {
+    background-color: var(--color-primary-600);
+    color: var(--color-white-100);
+    transform: scale(0.98);
+}
+
+.basebuttonContainer button:disabled {
+    background-color: var(--color-grey-300);
+    color: var(--color-grey-600);
+    cursor: not-allowed;
+}
