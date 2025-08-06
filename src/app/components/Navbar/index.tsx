@@ -6,12 +6,14 @@ export default function Navbar() {
 		<nav className={styles.navbar}>
 			<div className={styles.navbarContainer}>
 				<div className={styles.navbarLogo}>
-					<Image
-						src="/logo/Icon Only=True.svg"
-						alt="Logo"
-						width={50}
-						height={50}
-					/>
+					<Link href="/" >
+						<Image
+							src="/logo/Icon Only=True.svg"
+							alt="Logo"
+							width={50}
+							height={50}
+						/>
+					</Link>
 				</div>
 				<ul className={styles.navbarLinks}>
 					<li className={styles.navbarLink}>
@@ -20,13 +22,19 @@ export default function Navbar() {
 						</Link>
 					</li>
 					<li className={styles.navbarLink}>
-						<Link href="/about" className={styles.linkShows}>
+						<Link href="/" className={styles.linkShows}>
 							TV Shows
 						</Link>
 					</li>
 					<li className={styles.navbarLink}>
-						<Link href="/contact" className={styles.linkSuggest}>
-							Suggest Me <Image src="/icons/arrow-right.svg" alt="Arrow Right Icon" width={20} height={20} />
+						<Link href="/suggestme" className={styles.linkSuggest}>
+							Suggest Me{" "}
+							<Image
+								src="/icons/arrow-right.svg"
+								alt="Arrow Right Icon"
+								width={20}
+								height={20}
+							/>
 						</Link>
 					</li>
 				</ul>
