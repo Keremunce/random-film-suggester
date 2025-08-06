@@ -16,11 +16,10 @@ type InputProps = {
 };
 
 export const BaseInput = ({
-	value = string,
-	onChange = (e) => {},
+	value = "",
+	onChange = (e) => { onChange?.(e); },
 	variant = "default",
 	size = "md",
-	placeholder = "eg. Avengers",
 	iconPath = "/icons/placeholder.svg",
 	idFor,
 	label,
@@ -30,16 +29,13 @@ export const BaseInput = ({
 		primary: styles.baseinputPrimary,
 		search: styles.baseinputSearch,
 	};
-	const sizeStyles = {
-		sm: styles.baseinputSm,
-		md: styles.baseinputMd,
-		lg: styles.baseinputLg,
-	};
 	const [hasValue, setHasValue] = useState(false);
 	return (
 		<div className={styles.baseinputContainer}>
 			<div className={styles.baseinputLogo}>
-				{iconPath && <Image src={iconPath} alt="Logo" width={24} height={24} />}
+				{typeof iconPath === 'string' && (
+    <Image src={iconPath} alt="Logo" width={24} height={24} />
+)}
 			</div>
 			<div
 				className={`${styles.baseinputInputContainer} ${
@@ -55,8 +51,11 @@ export const BaseInput = ({
 				<input
 					onChange={(e) => {
 						setHasValue(e.target.value.length > 0); // Local function
-						onChange && onChange(e); // Call the prop's onChange function if provided
+						if (onChange) {
+							onChange(e); // Properly call the 'onChange' function if provided
+						}
 					}}
+					value={value}
 					type="text"
 					size={size === "lg" ? 40 : size === "md" ? 30 : 20}
 					id={idFor}

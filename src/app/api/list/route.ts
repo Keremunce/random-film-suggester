@@ -13,7 +13,7 @@ export async function GET() {
 
 		const data = await res.json();
 		return NextResponse.json(data.results); // sadece results kısmını döndürüyoruz
-	} catch (error) {
+	} catch {
 		return NextResponse.json(
 			{ error: "Failed to fetch movie list" },
 			{ status: 500 }

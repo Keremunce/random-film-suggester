@@ -34,7 +34,7 @@ export const MovieCard = ({
 			onClick={onClick}
 		>
 			<RatingButton rating={rating} />
-			<img
+			<Image
 				src={fullPosterUrl}
 				alt={title}
 				width={150}

@@ -22,7 +22,7 @@ export async function GET() {
 			data.results[Math.floor(Math.random() * data.results.length)];
 
 		return NextResponse.json(randomMovie);
-	} catch (error) {
+	} catch {
 		return NextResponse.json(
 			{ error: "Failed to fetch movie" },
 			{ status: 500 }

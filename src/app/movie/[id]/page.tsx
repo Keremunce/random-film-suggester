@@ -1,57 +1,66 @@
-"use client";
-import { useEffect, useState } from "react";
-import { use } from "react";
-import Styles from "./style.module.css";
-import { RatingButton } from "@/app/components/RatingButton";
 import Navbar from "@/components/Navbar";
+import { RatingButton } from "@/app/components/RatingButton";
+import Image from "next/image";
+import Styles from "./style.module.css";
 
-type MovieDetailProps = {
-	params: {
-		id: string;
-	};
+type MovieDetailParams = Promise<{ id: string }>;
+type Movie = {
+	adult: boolean;
+	backdrop_path: string;
+	genre_ids: number[];
+	id: number;
+	original_language: string;
+	original_title: string;
+	overview: string;
+	popularity: number;
+	poster_path: string;
+	release_date: string;
+	title: string;
+	video: boolean;
+	vote_average: number;
+	vote_count: number;
 };
 
-export default function MovieDetail({ params }: MovieDetailProps) {
-	const [movie, setMovie] = useState(null);
-	const { id } = use(params);
+export default async function MovieDetail({
+	params,
+}: {
+	params: MovieDetailParams;
+}) {
+	const { id } = await params;
 
-	useEffect(() => {
-		fetch("/api/list")
-			.then((response) => response.json())
-			.then((data) => {
-				data.forEach((item) => {
-					if (item.id == id) {
-						setMovie(item);
-					}
-				});
-			})
-			.catch((error) => console.error("Error fetching movies:", error));
-	}, [id]);
-
+	const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/list`);
+	const data = await res.json();
+	const movie = data.find((item: Movie) => item.id == Number(id));
+	console.log(data);
 	if (!movie) {
-		return <p>Loading...</p>;
+		return (
+			<div className="container">
+				<Navbar />
+				<main className={Styles.movieDetailContainer}>
+					<p>Movie not found.</p>
+				</main>
+			</div>
+		);
 	}
 
 	return (
 		<div className="container">
-            <Navbar></Navbar>
+			<Navbar />
 			<main className={Styles.movieDetailContainer}>
 				<div className={Styles.moviePosterContainer}>
-					<img
+					<Image
 						src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
 						alt={movie.title}
 						className={Styles.moviePoster}
+						width={500}
+						height={750}
 					/>
 				</div>
 				<div className={Styles.movieContentContainer}>
-					<div>
-						<h1 className={Styles.movieTitle}>{movie.title}</h1>
-					</div>
-					<div>
-						<p className={Styles.movieOverview}>{movie.overview}</p>
-					</div>
+					<h1 className={Styles.movieTitle}>{movie.title}</h1>
+					<p className={Styles.movieOverview}>{movie.overview}</p>
 					<div className={Styles.ratingContainer}>
-						<RatingButton rating={movie.vote_average}></RatingButton>
+						<RatingButton rating={movie.vote_average} />
 					</div>
 
 					<div className={Styles.subContentContainer}>

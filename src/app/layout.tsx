@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { MovieProvider } from "./context/MovieContext";
 
-import { Poppins, Raleway, Roboto } from "next/font/google";
+import { Poppins } from "next/font/google";
 
 const poppins = Poppins({
 	weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
