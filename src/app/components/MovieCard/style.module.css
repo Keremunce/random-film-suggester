@@ -12,6 +12,8 @@
     gap: var(--space-md);
     border-radius: var(--radius-lg);
     position: relative;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    cursor: pointer;
 }
 
 .movieCardContainer .ratingButton {
@@ -34,4 +36,8 @@
     text-align: left;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+.movieCardContainer:hover {
+    background-color: var(--color-white-20);
+    transform: translateY(-10px);
 }
