@@ -52,6 +52,19 @@ export default function Home() {
 							</div>
 						))}
 					</div>
+					<div>
+						{filterValue !== "All" && (
+							<p className="filterDescription">
+								Showing {filterValue} only ({movies.filter((movie) =>
+									filterValue === "All"
+										? true
+										: movie.type === filterValue.toLowerCase()
+								).length})
+							</p>
+						)}	
+						<span className="filterTitle">All</span> <span className="filteredLength">({movies.length})</span>
+						
+					</div>
 					<div className="moviesList">
 						{movies
 							.filter((movie) =>

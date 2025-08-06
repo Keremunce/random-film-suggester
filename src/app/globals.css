@@ -203,7 +203,7 @@ body {
 
 .movieCardsContainer {
   display: grid;
-  gap: var(--space-md);
+  gap: var(--space-lg);
 }
 
 .filterSelectBox {
@@ -236,4 +236,12 @@ body {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: var(--space-md);
+}
+.filterTitle {
+  font: var(--typography-heading-three);
+  color: var(--color-grey-400);
+}
+.filteredLength{
+  font: var(--typography-body-regular);
+  color: var(--color-grey-400);
 }
