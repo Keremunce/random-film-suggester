@@ -33,8 +33,8 @@ export default function Home() {
 
 	return (
 		<>
-			<Navbar />
 			<main className="container mainContainer">
+				<Navbar />
 				<section className="heroContainer">
 					<h1 className="heroTitle">My Watchlist, Your Inspiration</h1>
 					<p className="heroSubtitle">
@@ -71,15 +71,19 @@ export default function Home() {
 					<div>
 						{filterValue !== "All" && (
 							<p className="filterDescription">
-								Showing {filterValue} only ({movies.filter((movie) =>
-									filterValue === "All"
-										? true
-										: movie.type === filterValue.toLowerCase()
-								).length})
+								Showing {filterValue} only (
+								{
+									movies.filter((movie) =>
+										filterValue === "All"
+											? true
+											: movie.type === filterValue.toLowerCase()
+									).length
+								}
+								)
 							</p>
-						)}	
-						<span className="filterTitle">All</span> <span className="filteredLength">({movies.length})</span>
-						
+						)}
+						<span className="filterTitle">All</span>{" "}
+						<span className="filteredLength">({movies.length})</span>
 					</div>
 					<div className="moviesList">
 						{filteredMovies
