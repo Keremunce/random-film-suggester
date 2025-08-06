@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import { BaseInput } from "@/components/BaseInput";
 import { MovieCard } from "@/app/components/MovieCard";
+import Link from "next/link";
 export default function Home() {
 	const [searchValue, setSearchValue] = useState("");
 	const [movies, setMovies] = useState([]);
@@ -93,13 +94,19 @@ export default function Home() {
 									: movie.type === filterValue.toLowerCase()
 							)
 							.map((movie) => (
-								<MovieCard
+								<Link
+									href={`/movie/${movie.id}`}
 									key={movie.id}
-									title={movie.title}
-									posterPath={movie.poster_path}
-									rating={movie.vote_average}
-									variant="default"
-								/>
+									className="movieCardLink"
+								>
+									<MovieCard
+										key={movie.id}
+										title={movie.title}
+										posterPath={movie.poster_path}
+										rating={movie.vote_average}
+										variant="default"
+									/>
+								</Link>
 							))}
 					</div>
 				</section>
