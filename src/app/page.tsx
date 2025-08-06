@@ -4,7 +4,9 @@ import Navbar from "@/components/Navbar";
 import { BaseInput } from "@/components/BaseInput";
 import { MovieCard } from "@/app/components/MovieCard";
 export default function Home() {
+	const [searchValue, setSearchValue] = useState("");
 	const [movies, setMovies] = useState([]);
+	const [filteredMovies, setFilteredMovies] = useState([]);
 	const [filterValue, setFilterValue] = useState("All");
 	const filters = ["All", "Movies", "TV Shows"];
 	useEffect(() => {
@@ -16,6 +18,18 @@ export default function Home() {
 			})
 			.catch((error) => console.error("Error fetching movies:", error));
 	}, []);
+
+	useEffect(() => {
+		if (searchValue) {
+			const lowerCaseSearch = searchValue.toLowerCase();
+			const filtered = movies.filter((movie) =>
+				movie.title.toLowerCase().includes(lowerCaseSearch)
+			);
+			setFilteredMovies(filtered);
+		} else {
+			setFilteredMovies(movies);
+		}
+	}, [searchValue, movies]);
 
 	return (
 		<>
@@ -36,6 +50,8 @@ export default function Home() {
 						label="Search Movies or TV Shows"
 						iconPath="/icons/search-normal.svg"
 						placeholder="Quentin Tarantino Movies"
+						value={searchValue}
+						onChange={(e) => setSearchValue(e.target.value)}
 					/>
 				</section>
 				<section className="movieCardsContainer">
@@ -66,7 +82,7 @@ export default function Home() {
 						
 					</div>
 					<div className="moviesList">
-						{movies
+						{filteredMovies
 							.filter((movie) =>
 								filterValue === "All"
 									? true

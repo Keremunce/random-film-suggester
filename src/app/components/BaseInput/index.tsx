@@ -11,9 +11,13 @@ type InputProps = {
 	idFor: string;
 	label: string;
 	iconPath?: string | ReactNode;
+	value?: string;
+	onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
 export const BaseInput = ({
+	value = string,
+	onChange = (e) => {},
 	variant = "default",
 	size = "md",
 	placeholder = "eg. Avengers",
@@ -37,15 +41,22 @@ export const BaseInput = ({
 			<div className={styles.baseinputLogo}>
 				{iconPath && <Image src={iconPath} alt="Logo" width={24} height={24} />}
 			</div>
-			<div className={`${styles.baseinputInputContainer} ${hasValue ? styles.hasValue : ""}`}>
+			<div
+				className={`${styles.baseinputInputContainer} ${
+					hasValue ? styles.hasValue : ""
+				}`}
+			>
 				<div>
 					<span className={styles.baseinputSmall}>{label}</span>
-					<label htmlFor={idFor} className={styles.baseinputLabel }>
+					<label htmlFor={idFor} className={styles.baseinputLabel}>
 						{label}
 					</label>
 				</div>
 				<input
-					onChange={(e) => setHasValue(e.target.value.length > 0)}
+					onChange={(e) => {
+						setHasValue(e.target.value.length > 0); // Local function
+						onChange && onChange(e); // Call the prop's onChange function if provided
+					}}
 					type="text"
 					size={size === "lg" ? 40 : size === "md" ? 30 : 20}
 					id={idFor}
