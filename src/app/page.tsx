@@ -6,12 +6,30 @@ import { MovieCard } from "@/app/components/MovieCard";
 import Link from "next/link";
 export default function Home() {
 	const [searchValue, setSearchValue] = useState("");
-	const [movies, setMovies] = useState<{ id: string; title: string; type: string; description: string; poster_path: string; vote_average: number }[]>([]); // Updated type definition to include 'vote_average'
-	const [filteredMovies, setFilteredMovies] = useState<{ id: string; title: string; type: string; description: string; poster_path: string; vote_average: number }[]>([]); // Updated type definition to include 'vote_average'
+	const [movies, setMovies] = useState<
+		{
+			id: string;
+			title: string;
+			type: string;
+			description: string;
+			poster_path: string;
+			vote_average: number;
+		}[]
+	>([]); // Updated type definition to include 'vote_average'
+	const [filteredMovies, setFilteredMovies] = useState<
+		{
+			id: string;
+			title: string;
+			type: string;
+			description: string;
+			poster_path: string;
+			vote_average: number;
+		}[]
+	>([]); // Updated type definition to include 'vote_average'
 	const [filterValue, setFilterValue] = useState("All");
 	const filters = ["All", "Movies", "TV Shows"];
 	useEffect(() => {
-		fetch("/api/list")
+		 fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/list`)
 			.then((response) => response.json())
 			.then((data) => {
 				console.log("Fetched movies:", data); // Log movies data to console
@@ -102,7 +120,9 @@ export default function Home() {
 									<MovieCard
 										key={movie.id}
 										title={movie.title}
-										description={movie.description || "No description available"} // Added 'description' property
+										description={
+											movie.description || "No description available"
+										} // Added 'description' property
 										posterPath={movie.poster_path}
 										rating={movie.vote_average}
 										variant="default"
