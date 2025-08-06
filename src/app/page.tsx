@@ -29,10 +29,9 @@ export default function Home() {
 	const [filterValue, setFilterValue] = useState("All");
 	const filters = ["All", "Movies", "TV Shows"];
 	useEffect(() => {
-		 fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/list`)
+		fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/list`)
 			.then((response) => response.json())
 			.then((data) => {
-				console.log("Fetched movies:", data); // Log movies data to console
 				setMovies(data);
 			})
 			.catch((error) => console.error("Error fetching movies:", error));

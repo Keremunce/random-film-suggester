@@ -31,7 +31,6 @@ export default async function MovieDetail({
 	const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/list`);
 	const data = await res.json();
 	const movie = data.find((item: Movie) => item.id == Number(id));
-	console.log(data);
 	if (!movie) {
 		return (
 			<div className="container">
