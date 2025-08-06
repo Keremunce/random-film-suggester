@@ -7,12 +7,15 @@ type MovieCardProps = {
 	description: string;
 	posterPath: string;
 	variant?: "default" | "addToMyList" | "alreadyWatched";
+	rating: number;
 	onClick?: () => void;
 };
+const TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p";
+const size = "w500"; // istediğin kalite
 
 export const MovieCard = ({
 	title,
-	vote,
+	rating,
 	posterPath,
 	variant = "default",
 	onClick,
@@ -22,14 +25,17 @@ export const MovieCard = ({
 		addToMyList: styles.movieCardAddToMyList,
 		alreadyWatched: styles.movieCardAlreadyWatched,
 	};
+
+	const fullPosterUrl = `${TMDB_IMAGE_BASE}/${size}${posterPath}`;
+
 	return (
 		<div
 			className={`${styles.movieCardContainer} ${variantStyles[variant]}`}
 			onClick={onClick}
 		>
-			<RatingButton rating={vote} />
+			<RatingButton rating={rating} />
 			<img
-				src={posterPath}
+				src={fullPosterUrl}
 				alt={title}
 				width={150}
 				height={225}

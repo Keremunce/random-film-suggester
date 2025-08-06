@@ -6,6 +6,7 @@ type RatingButtonProps = {
 };
 
 export const RatingButton = ({ rating, onClick }: RatingButtonProps) => {
+	if (!rating) return;
 	const truncatedRating = rating.toFixed(1); // Truncate to one decimal place
 
 	return (

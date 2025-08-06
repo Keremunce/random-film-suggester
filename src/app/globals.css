@@ -150,7 +150,7 @@
   --radius-xl: 16px;
 
   /* Layout grid (fluid max-width) */
-  --container-max: 1440px;
+  --container-max: 1200px;
   --container-gutter: 24px;
   --effect-bg-blur: 80px;
 }
@@ -178,6 +178,62 @@ body {
 .container {
   max-width: var(--container-max);
   margin: 0 auto;
-  padding: 0 var(--container-gutter);
+  padding: var(--container-gutter);
+}
 
+.mainContainer {
+  display: grid;
+  gap: var(--space-xl);
+}
+
+.heroContainer {
+  display: grid;
+  gap: var(--space-md);
+}
+
+.heroTitle {
+  font: var(--typography-heading-one);
+  color: var(--color-grey-50);
+}
+
+.heroSubtitle {
+  font: var(--typography-body-regular);
+  color: var(--color-grey-300);
+}
+
+.movieCardsContainer {
+  display: grid;
+  gap: var(--space-md);
+}
+
+.filterSelectBox {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  background-color: var(--color-black-20);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(var(--effect-bg-blur));
+  padding: var(--space-sm);
+}
+.filterSelectBox > div{
+  color: var(--color-grey-300);
+  font: var(--typography-link-regular);
+  cursor: pointer;
+  padding: var(--space-sm) var(--space-xl);
+  border-radius: var(--radius-md);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+.filterSelectBox > div:hover {
+  color: var(--color-primary-500);
+}
+.filterSelectBox > div.active {
+  color: var(--color-primary-50);
+  background-color: var(--color-primary-400);
+}
+.moviesList{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--space-md);
 }
