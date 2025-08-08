@@ -2,24 +2,10 @@ import Navbar from "@/components/Navbar";
 import { RatingButton } from "@/app/components/RatingButton";
 import Image from "next/image";
 import Styles from "./style.module.css";
+import { Movie } from "@/types/Movie";
 
 type MovieDetailParams = Promise<{ id: string }>;
-type Movie = {
-	adult: boolean;
-	backdrop_path: string;
-	genre_ids: number[];
-	id: number;
-	original_language: string;
-	original_title: string;
-	overview: string;
-	popularity: number;
-	poster_path: string;
-	release_date: string;
-	title: string;
-	video: boolean;
-	vote_average: number;
-	vote_count: number;
-};
+
 
 export default async function MovieDetail({
 	params,
