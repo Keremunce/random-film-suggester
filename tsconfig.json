@@ -19,13 +19,19 @@
 			}
 		],
 		"baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"],
-      "@/components/*": ["./src/app/components/*"],
-      "@/context/*": ["./src/app/context/*"],
-      "@/lib/*": ["./src/app/lib/*"]
-    }
+		"paths": {
+			"@/*": ["./src/*"],
+			"@/components/*": ["./src/app/components/*"],
+			"@/context/*": ["./src/app/context/*"],
+			"@/lib/*": ["./src/app/lib/*"]
+		}
 	},
-	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+	"include": [
+		"next-env.d.ts",
+		"**/*.ts",
+		"**/*.tsx",
+		".next/types/**/*.ts",
+		"src/app/suggestme/page.tsx"
+	],
 	"exclude": ["node_modules"]
 }
