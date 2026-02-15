@@ -20,8 +20,10 @@ export default function HomePage() {
   return (
     <div className={styles.page}>
       <div className={styles.hero}>
-        <h1>🎬 Media Tracker</h1>
-        <p>Own your watch history. Local-first. No login. Full data export.</p>
+        <h1 className={styles.heroTitle}>My Watchlist, Your Inspiration</h1>
+        <p className={styles.heroSubtitle}>
+          Discover all the movies and TV shows I&apos;ve watched so far. Got a great recommendation? Don&apos;t keep it to yourself — I&apos;m all ears!
+        </p>
       </div>
 
       <div className={styles.quickStats}>

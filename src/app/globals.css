@@ -1,4 +1,103 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&family=Raleway:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+:root {
+  /* Primary */
+  --color-primary-50: #ebe9fe;
+  --color-primary-100: #dedbfd;
+  --color-primary-200: #beb7fb;
+  --color-primary-300: #9c92f8;
+  --color-primary-400: #7b6ef6;
+  --color-primary-500: #5a4af4;
+  --color-primary-600: #483bc3;
+  --color-primary-700: #362c92;
+  --color-primary-800: #251e62;
+  --color-primary-900: #120f31;
+
+  /* Secondary */
+  --color-secondary-50: #e4f4ff;
+  --color-secondary-100: #d2ecfe;
+  --color-secondary-200: #a5dbfe;
+  --color-secondary-300: #78c8fd;
+  --color-secondary-400: #4bb7fd;
+  --color-secondary-500: #1ea5fc;
+  --color-secondary-600: #1884ca;
+  --color-secondary-700: #126297;
+  --color-secondary-800: #0c4265;
+  --color-secondary-900: #062032;
+
+  /* Tertiary */
+  --color-tertiary-50: #f6edff;
+  --color-tertiary-100: #f0e2ff;
+  --color-tertiary-200: #e2c5ff;
+  --color-tertiary-300: #d3a7ff;
+  --color-tertiary-400: #c58aff;
+  --color-tertiary-500: #b66dff;
+  --color-tertiary-600: #9257cc;
+  --color-tertiary-700: #6d4199;
+  --color-tertiary-800: #492c66;
+  --color-tertiary-900: #241633;
+
+  /* Success */
+  --color-success-50: #e1f9f2;
+  --color-success-100: #cdf5e9;
+  --color-success-200: #9bebd3;
+  --color-success-300: #69e2bd;
+  --color-success-400: #37d8a7;
+  --color-success-500: #05ce91;
+  --color-success-600: #04a574;
+  --color-success-700: #037c57;
+  --color-success-800: #02523a;
+  --color-success-900: #01291d;
+
+  /* Error */
+  --color-error-50: #ffecec;
+  --color-error-100: #ffdfdf;
+  --color-error-200: #ffc0c0;
+  --color-error-300: #ffa0a0;
+  --color-error-400: #ff8181;
+  --color-error-500: #ff6161;
+  --color-error-600: #cc4e4e;
+  --color-error-700: #993a3a;
+  --color-error-800: #662727;
+  --color-error-900: #331313;
+
+  /* Warning */
+  --color-warning-50: #fff5e9;
+  --color-warning-100: #ffefdb;
+  --color-warning-200: #ffdeb6;
+  --color-warning-300: #ffce92;
+  --color-warning-400: #ffbd6d;
+  --color-warning-500: #ffad49;
+  --color-warning-600: #cc8a3a;
+  --color-warning-700: #99682c;
+  --color-warning-800: #66451d;
+  --color-warning-900: #33230f;
+
+  /* Grey */
+  --color-grey-50: #ebeef5;
+  --color-grey-100: #c3c8d4;
+  --color-grey-200: #a8aebf;
+  --color-grey-300: #8e95a9;
+  --color-grey-400: #767e94;
+  --color-grey-500: #61697f;
+  --color-grey-600: #475069;
+  --color-grey-700: #323b54;
+  --color-grey-800: #20283e;
+  --color-grey-900: #121829;
+
+  /* Black */
+  --color-black-10: #0000001a;
+  --color-black-20: #00000033;
+  --color-black-30: #0000004d;
+  --color-black-40: #00000066;
+  --color-black-50: #00000080;
+  --color-black-65: #000000a6;
+  --color-black-75: #000000bf;
+  --color-black-100: #000000;
+
+  /* White */
+  --color-white: #ffffff;
+}
 
 * {
   margin: 0;
@@ -11,11 +110,11 @@ html {
 }
 
 body {
-  font-family: var(--font-poppins), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: 'Poppins', 'Raleway', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: 1rem;
   line-height: 1.6;
-  color: #333;
-  background: #ffffff;
+  color: var(--color-grey-800);
+  background: linear-gradient(135deg, #ffffff 0%, #f8f6ff 100%);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
