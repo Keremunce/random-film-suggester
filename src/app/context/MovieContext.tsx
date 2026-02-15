@@ -1,56 +1,53 @@
 'use client';
 
-import React, { createContext, useReducer, ReactNode } from "react";
+import React, { createContext, useReducer, ReactNode, useEffect } from "react";
 
-// TMDB'den dönen film verisi tipi
-interface Movie {
-	id: number;
+// Local storage key
+const STORAGE_KEY = "rfs_media_items";
+
+// MediaItem model (local-first)
+export type MediaItem = {
+	id: string; // local unique id (uuid or similar)
+	tmdbId: number;
+	type: "movie" | "tv";
 	title: string;
-	original_title: string;
-	original_language: string;
-	release_date: string;
-	popularity: number;
-	vote_average: number;
-	vote_count: number;
-	overview: string;
-	poster_path: string;
-	adult: boolean;
-}
-// Kullanıcı listesi tipi
-interface CustomList {
-	name: string;
-	movies: Movie[];
-}
+	posterPath: string | null;
+	releaseDate: string | null;
+	status: "watched" | "watchlist";
+	rating: number | null;
+	addedAt: string; // ISO date
+};
 
 // State tipi
 interface MovieState {
-	movies: Movie[]; // TMDB'den gelen film listesi
+	items: MediaItem[];
 	filters: {
 		genre: string | null;
 		yearRange: [number, number] | null;
 	};
-	customLists: CustomList[]; // Kullanıcı JSON listeleri
 }
 
 // Action tipi
 type MovieAction =
-	| { type: "SET_MOVIES"; payload: Movie[] }
-	| {
-			type: "SET_FILTERS";
-			payload: { genre: string | null; yearRange: [number, number] | null };
-	  }
-	| { type: "ADD_TO_LIST"; payload: CustomList };
+	| { type: "SET_ITEMS"; payload: MediaItem[] }
+	| { type: "ADD_ITEM"; payload: MediaItem }
+	| { type: "REMOVE_ITEM"; payload: { id: string } }
+	| { type: "UPDATE_ITEM"; payload: MediaItem }
+	| { type: "SET_FILTERS"; payload: { genre: string | null; yearRange: [number, number] | null } };
 
-// Reducer ve diğer kodlar aynı kalır
 // Reducer
 const movieReducer = (state: MovieState, action: MovieAction): MovieState => {
 	switch (action.type) {
-		case "SET_MOVIES":
-			return { ...state, movies: action.payload };
+		case "SET_ITEMS":
+			return { ...state, items: action.payload };
+		case "ADD_ITEM":
+			return { ...state, items: [action.payload, ...state.items] };
+		case "REMOVE_ITEM":
+			return { ...state, items: state.items.filter((i) => i.id !== action.payload.id) };
+		case "UPDATE_ITEM":
+			return { ...state, items: state.items.map((i) => (i.id === action.payload.id ? action.payload : i)) };
 		case "SET_FILTERS":
 			return { ...state, filters: action.payload };
-		case "ADD_TO_LIST":
-			return { ...state, customLists: [...state.customLists, action.payload] };
 		default:
 			return state;
 	}
@@ -65,18 +62,36 @@ const MovieContext = createContext<{
 // Provider
 const MovieProvider = ({ children }: { children: ReactNode }) => {
 	const initialState: MovieState = {
-		movies: [],
+		items: [],
 		filters: { genre: null, yearRange: null },
-		customLists: [],
 	};
 
 	const [state, dispatch] = useReducer(movieReducer, initialState);
 
-	return (
-		<MovieContext.Provider value={{ state, dispatch }}>
-			{children}
-		</MovieContext.Provider>
-	);
+	// Load from localStorage on mount
+	useEffect(() => {
+		try {
+			const raw = localStorage.getItem(STORAGE_KEY);
+			if (raw) {
+				const parsed = JSON.parse(raw) as MediaItem[];
+				dispatch({ type: "SET_ITEMS", payload: parsed });
+			}
+		} catch (err) {
+			// ignore parse errors
+			console.error("Failed to load media items from localStorage", err);
+		}
+	}, []);
+
+	// Persist items to localStorage whenever they change
+	useEffect(() => {
+		try {
+			localStorage.setItem(STORAGE_KEY, JSON.stringify(state.items));
+		} catch (err) {
+			console.error("Failed to save media items to localStorage", err);
+		}
+	}, [state.items]);
+
+	return <MovieContext.Provider value={{ state, dispatch }}>{children}</MovieContext.Provider>;
 };
 
 export { MovieContext, MovieProvider };

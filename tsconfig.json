@@ -21,10 +21,11 @@
 		"baseUrl": ".",
 		"paths": {
 			"@/*": ["./src/*"],
-			"@/components/*": ["./src/app/components/*"],
+			"@/components/*": ["./src/components/*"],
 			"@/types/*": ["./src/app/types/*"],
 			"@/context/*": ["./src/app/context/*"],
-			"@/lib/*": ["./src/app/lib/*"]
+			"@/lib/*": ["./src/app/lib/*"],
+			"@/utils/*": ["./src/utils/*"]
 		}
 	},
 	"include": [

@@ -1,136 +1,73 @@
 "use client";
-import { useEffect, useState } from "react";
-import Navbar from "@/components/Navbar";
-import { BaseInput } from "@/components/BaseInput";
-import { MovieCard } from "@/app/components/MovieCard";
+
+import React, { useContext } from "react";
 import Link from "next/link";
-export default function Home() {
-	const [searchValue, setSearchValue] = useState("");
-	const [movies, setMovies] = useState<
-		{
-			id: string;
-			title: string;
-			type: string;
-			description: string;
-			poster_path: string;
-			vote_average: number;
-		}[]
-	>([]); // Updated type definition to include 'vote_average'
-	const [filteredMovies, setFilteredMovies] = useState<
-		{
-			id: string;
-			title: string;
-			type: string;
-			description: string;
-			poster_path: string;
-			vote_average: number;
-		}[]
-	>([]); // Updated type definition to include 'vote_average'
-	const [filterValue, setFilterValue] = useState("All");
-	const filters = ["All", "Movies", "TV Shows"];
-	useEffect(() => {
-		fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/list`)
-			.then((response) => response.json())
-			.then((data) => {
-				setMovies(data);
-			})
-			.catch((error) => console.error("Error fetching movies:", error));
-	}, []);
+import { MovieContext } from "@/app/context/MovieContext";
+import styles from "./page.module.css";
 
-	useEffect(() => {
-		if (searchValue) {
-			const lowerCaseSearch = searchValue.toLowerCase();
-			const filtered = movies.filter((movie) =>
-				movie.title.toLowerCase().includes(lowerCaseSearch)
-			);
-			setFilteredMovies(filtered);
-		} else {
-			setFilteredMovies(movies);
-		}
-	}, [searchValue, movies]);
+export default function HomePage() {
+  const context = useContext(MovieContext);
+  if (!context) throw new Error("MovieContext not found");
 
-	return (
-		<>
-			<main className="container mainContainer">
-				<Navbar />
-				<section className="heroContainer">
-					<h1 className="heroTitle">My Watchlist, Your Inspiration</h1>
-					<p className="heroSubtitle">
-						Discover all the movies and TV shows I’ve watched so far. Got a
-						great recommendation? Don’t keep it to yourself — I’m all ears!
-					</p>
-				</section>
-				<section className="searchContainer">
-					<BaseInput
-						variant="search"
-						size="lg"
-						idFor="baseinput2"
-						label="Search Movies or TV Shows"
-						iconPath="/icons/search-normal.svg"
-						placeholder="Quentin Tarantino Movies"
-						value={searchValue}
-						onChange={(e) => setSearchValue(e.target.value)}
-					/>
-				</section>
-				<section className="movieCardsContainer">
-					<div className="filterSelectBox">
-						{filters.map((filter) => (
-							<div
-								key={filter}
-								className={`filterOption ${
-									filterValue === filter ? "active" : ""
-								}`}
-								onClick={() => setFilterValue(filter)}
-							>
-								{filter}
-							</div>
-						))}
-					</div>
-					<div>
-						{filterValue !== "All" && (
-							<p className="filterDescription">
-								Showing {filterValue} only (
-								{
-									movies.filter((movie) =>
-										filterValue === "All"
-											? true
-											: movie.type === filterValue.toLowerCase()
-									).length
-								}
-								)
-							</p>
-						)}
-						<span className="filterTitle">All</span>{" "}
-						<span className="filteredLength">({movies.length})</span>
-					</div>
-					<div className="moviesList">
-						{filteredMovies
-							.filter((movie) =>
-								filterValue === "All"
-									? true
-									: movie.type === filterValue.toLowerCase()
-							)
-							.map((movie) => (
-								<Link
-									href={`/movie/${movie.id}`}
-									key={movie.id}
-									className="movieCardLink"
-								>
-									<MovieCard
-										key={movie.id}
-										title={movie.title}
-										description={
-											movie.description || "No description available"
-										} // Added 'description' property
-										posterPath={movie.poster_path}
-										rating={movie.vote_average}
-										variant="default"
-									/>
-								</Link>
-							))}
-					</div>
-				</section>
-			</main>
-		</>
-	);
+  const { state } = context;
+
+  const stats = {
+    total: state.items.length,
+    watched: state.items.filter((i) => i.status === "watched").length,
+    watchlist: state.items.filter((i) => i.status === "watchlist").length,
+  };
+
+  return (
+    <div className={styles.page}>
+      <div className={styles.hero}>
+        <h1>🎬 Media Tracker</h1>
+        <p>Own your watch history. Local-first. No login. Full data export.</p>
+      </div>
+
+      <div className={styles.quickStats}>
+        <div className={styles.stat}>
+          <div className={styles.number}>{stats.total}</div>
+          <div className={styles.label}>Total Items</div>
+        </div>
+        <div className={styles.stat}>
+          <div className={styles.number}>{stats.watched}</div>
+          <div className={styles.label}>Watched</div>
+        </div>
+        <div className={styles.stat}>
+          <div className={styles.number}>{stats.watchlist}</div>
+          <div className={styles.label}>Watchlist</div>
+        </div>
+      </div>
+
+      <div className={styles.cta}>
+        <Link href="/search" className={styles.button}>
+          🔍 Search Movies & Series
+        </Link>
+        <Link href="/list" className={styles.button}>
+          📋 View My List
+        </Link>
+      </div>
+
+      <div className={styles.features}>
+        <h2>Features</h2>
+        <ul>
+          <li>🔎 Search from TMDB database</li>
+          <li>⭐ Rate movies and series 1-5 stars</li>
+          <li>🏷️ Tag as &quot;Watched&quot; or &quot;Watchlist&quot;</li>
+          <li>📊 Filter by status and type</li>
+          <li>💾 All data stored locally</li>
+          <li>📥 Import/Export JSON & CSV</li>
+          <li>📱 Mobile-friendly design</li>
+        </ul>
+      </div>
+
+      <div className={styles.privacy}>
+        <h3>Privacy First</h3>
+        <p>
+          Your data never leaves your device. No tracking, no backend, no authentication required.
+          Full control over your library with export and import capabilities.
+        </p>
+      </div>
+    </div>
+  );
 }

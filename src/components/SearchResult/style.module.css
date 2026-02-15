@@ -1,0 +1,101 @@
+.result {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  background: #fff;
+  align-items: center;
+  transition: box-shadow 0.2s ease;
+}
+
+.result:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.poster {
+  flex-shrink: 0;
+  width: 100px;
+  height: 150px;
+  overflow: hidden;
+  border-radius: 4px;
+  background: #f0f0f0;
+}
+
+.poster img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.info {
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.meta {
+  margin: 0.25rem 0 0 0;
+  font-size: 0.875rem;
+  color: #666;
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.badge {
+  font-size: 0.875rem;
+  padding: 0.25rem 0.5rem;
+  background: #f0f0f0;
+  border-radius: 3px;
+}
+
+.addBtn {
+  flex-shrink: 0;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  background: #007bff;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.addBtn:hover:not(:disabled) {
+  background: #0056b3;
+}
+
+.addBtn:disabled,
+.addBtn.added {
+  background: #d4f1d4;
+  color: #2d6a2d;
+  cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+  .result {
+    gap: 0.75rem;
+  }
+
+  .poster {
+    width: 80px;
+    height: 120px;
+  }
+
+  .title {
+    font-size: 0.95rem;
+  }
+
+  .addBtn {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+  }
+}

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { MovieProvider } from "./context/MovieContext";
+import { Navigation } from "@/components/Navigation";
 
 import { Poppins } from "next/font/google";
 
@@ -11,8 +12,8 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-	title: "Random Film Suggester",
-	description: "Discover random movies with ease!",
+	title: "Media Tracker",
+	description: "Your personal movie and TV series tracker",
 };
 
 export default function RootLayout({
@@ -21,9 +22,12 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en" data-theme="dark" className={`${poppins.variable}`}>
-			<body className="bg-gray-900 text-white">
-				<MovieProvider>{children}</MovieProvider>
+		<html lang="en" className={`${poppins.variable}`}>
+			<body>
+				<MovieProvider>
+					<Navigation />
+					{children}
+				</MovieProvider>
 			</body>
 		</html>
 	);
