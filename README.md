@@ -1,29 +1,35 @@
-# 🎬 Random Film Suggester
+# 🎬 Movie Tracker & Watchlist
 
-**Random Film Suggester** is a movie recommendation application built with **Next.js** and **TypeScript**.  
-Its main purpose is to help users who struggle with movie choice by providing **random movie suggestions**.  
-In later versions, it will also allow users to **import their own watchlists** and get random recommendations from those lists.
+A local-first movie & TV tracker built with **Next.js (App Router)** and **TypeScript** using the TMDB API.  
+It helps you keep a personal watchlist, mark watched titles, and export your library fast.
+
+No authentication.  
+No backend.  
+Your data stays in your browser.
 
 ---
 
 ## 🚀 Features
 
-- **Random Movie Suggestion:** Fetches random popular movies using the TMDB API.
-- **Movie Details:** Displays poster, overview, and rating.
-- **Filtering (Coming Soon):** Filter by genre and release year.
-- **Custom Watchlist (Coming Soon):** Import/export JSON lists and get suggestions from them.
-- **Responsive UI:** Built with Tailwind CSS for a modern, mobile-friendly interface.
+- 🔎 Search movies & TV (TMDB API)
+- ➕ Add to watchlist
+- 👁 Watched / Watchlist status
+- ⭐ Rating (1–10)
+- 🎲 Random suggestion from watched list
+- 📤 Export (JSON & CSV)
+- 📥 Import JSON (duplicate-safe)
+- 💾 LocalStorage persistence
+- 📱 Responsive UI
 
 ---
 
 ## 🛠️ Tech Stack
 
-- [Next.js 15](https://nextjs.org/) (App Router)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [TMDB API](https://www.themoviedb.org/documentation/api)
-- Context API (Global State Management)
-- [Vercel](https://vercel.com/) (Deployment)
+- Next.js 15 (App Router)
+- TypeScript
+- TMDB API
+- Context API
+- CSS Modules
 
 ---
 
@@ -34,3 +40,21 @@ In later versions, it will also allow users to **import their own watchlists** a
    git clone https://github.com/Keremunce/random-film-suggester.git
    cd random-film-suggester
    ```
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+3. **Add environment variable:**
+   Create `.env.local`:
+   ```bash
+   TMDB_API_KEY=your_key_here
+   ```
+4. **Run the app:**
+   ```bash
+   npm run dev
+   ```
+
+## ⚠️ Notes
+
+- Data is stored locally in the browser (single device only).
+- TMDB API key is required for search and new releases.
