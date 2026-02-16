@@ -3,6 +3,7 @@
 import React from "react";
 import { MediaItem } from "@/app/context/MovieContext";
 import { StarRating } from "@/components/StarRating";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 import styles from "./style.module.css";
 
 interface MediaCardProps {
@@ -41,18 +42,16 @@ export const MediaCard: React.FC<MediaCardProps> = ({
         <h3 className={styles.title}>{item.title}</h3>
 
         <p className={styles.meta}>
-          <span className={styles.badge}>{item.type === "movie" ? "🎬" : "📺"}</span>
+          <span className={styles.badge}>
+            {item.type === "movie" ? "Movie" : "Series"}
+          </span>
           <span className={styles.year}>
             {item.releaseDate ? new Date(item.releaseDate).getFullYear() : "N/A"}
           </span>
         </p>
 
         <div className={styles.rating}>
-          <StarRating
-            value={item.rating}
-            onChange={handleRatingChange}
-            size="sm"
-          />
+          <StarRating value={item.rating} onChange={handleRatingChange} size="sm" />
         </div>
 
         <div className={styles.actions}>
@@ -60,7 +59,17 @@ export const MediaCard: React.FC<MediaCardProps> = ({
             className={`${styles.statusBtn} ${styles[item.status]}`}
             onClick={handleStatusToggle}
           >
-            {item.status === "watched" ? "✓ Watched" : "📋 Watchlist"}
+            {item.status === "watched" ? (
+              <>
+                <FiEyeOff aria-hidden="true" />
+                Unwatched
+              </>
+            ) : (
+              <>
+                <FiEye aria-hidden="true" />
+                I Watched
+              </>
+            )}
           </button>
 
           <button

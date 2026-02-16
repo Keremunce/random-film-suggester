@@ -35,7 +35,7 @@ export const StarRating: React.FC<StarRatingProps> = ({
 
   return (
     <div className={`${styles.rating} ${styles[size]}`} role="group">
-      {[1, 2, 3, 4, 5].map((star) => (
+      {Array.from({ length: 10 }, (_, i) => i + 1).map((star) => (
         <button
           key={star}
           type="button"

@@ -10,6 +10,8 @@ interface TMDBResult {
   poster_path: string | null;
   release_date?: string;
   first_air_date?: string;
+  overview?: string;
+  vote_average?: number;
 }
 
 interface NormalizedMedia {
@@ -18,6 +20,8 @@ interface NormalizedMedia {
   title: string;
   posterPath: string | null;
   releaseDate: string | null;
+  overview: string | null;
+  voteAverage: number | null;
 }
 
 export async function GET(request: NextRequest) {
@@ -60,6 +64,9 @@ export async function GET(request: NextRequest) {
           item.media_type === "movie"
             ? item.release_date || null
             : item.first_air_date || null,
+        overview: item.overview || null,
+        voteAverage:
+          typeof item.vote_average === "number" ? item.vote_average : null,
       }));
 
     return NextResponse.json({ results });

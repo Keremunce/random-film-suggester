@@ -2,15 +2,16 @@
   display: flex;
   gap: 1rem;
   padding: 1rem;
-  border: 1px solid #e0e0e0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 6px;
-  background: #fff;
+  background: rgba(18, 24, 41, 0.7);
   align-items: center;
   transition: box-shadow 0.2s ease;
+  color: var(--color-grey-50);
 }
 
 .result:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
 }
 
 .poster {
@@ -19,7 +20,7 @@
   height: 150px;
   overflow: hidden;
   border-radius: 4px;
-  background: #f0f0f0;
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .poster img {
@@ -38,12 +39,36 @@
   font-size: 1rem;
   font-weight: 600;
   line-height: 1.3;
+  color: var(--color-grey-50);
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+}
+
+.description {
+  margin: 0.35rem 0 0 0;
+  font-size: 0.9rem;
+  color: var(--color-grey-200);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .meta {
   margin: 0.25rem 0 0 0;
   font-size: 0.875rem;
-  color: #666;
+  color: var(--color-grey-300);
   display: flex;
   gap: 0.75rem;
   align-items: center;
@@ -52,7 +77,8 @@
 .badge {
   font-size: 0.875rem;
   padding: 0.25rem 0.5rem;
-  background: #f0f0f0;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--color-grey-100);
   border-radius: 3px;
 }
 
@@ -61,7 +87,7 @@
   padding: 0.5rem 1rem;
   border: none;
   border-radius: 6px;
-  background: #007bff;
+  background: var(--color-secondary-500);
   color: white;
   font-weight: 500;
   cursor: pointer;
@@ -70,13 +96,13 @@
 }
 
 .addBtn:hover:not(:disabled) {
-  background: #0056b3;
+  filter: brightness(1.05);
 }
 
 .addBtn:disabled,
 .addBtn.added {
-  background: #d4f1d4;
-  color: #2d6a2d;
+  background: rgba(5, 206, 145, 0.2);
+  color: #a6f2d8;
   cursor: not-allowed;
 }
 

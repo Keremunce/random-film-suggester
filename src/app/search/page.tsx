@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useContext, useCallback, useRef } from "react";
+import React, { useState, useContext, useCallback, useRef, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { SearchResult } from "@/components/SearchResult";
 import { MovieContext } from "@/app/context/MovieContext";
 import styles from "./style.module.css";
@@ -13,6 +14,8 @@ interface SearchResultData {
   title: string;
   posterPath: string | null;
   releaseDate: string | null;
+  overview: string | null;
+  voteAverage: number | null;
 }
 
 export default function SearchPage() {
@@ -20,6 +23,7 @@ export default function SearchPage() {
   const [results, setResults] = useState<SearchResultData[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const searchParams = useSearchParams();
 
   const context = useContext(MovieContext);
   if (!context) throw new Error("MovieContext not found");
@@ -60,6 +64,17 @@ export default function SearchPage() {
       performSearch(value);
     }, 300);
   };
+
+  useEffect(() => {
+    const q = searchParams.get("q") || "";
+    setQuery(q);
+    if (q.trim()) {
+      performSearch(q);
+    } else {
+      setResults([]);
+      setError(null);
+    }
+  }, [searchParams, performSearch]);
 
   const handleAddItem = (item: SearchResultData) => {
     const newItem = {
@@ -116,6 +131,8 @@ export default function SearchPage() {
             type={item.type}
             posterPath={item.posterPath}
             releaseDate={item.releaseDate}
+            overview={item.overview}
+            voteAverage={item.voteAverage}
             onAdd={() => handleAddItem(item)}
             isAdded={isItemAdded(item.tmdbId)}
           />

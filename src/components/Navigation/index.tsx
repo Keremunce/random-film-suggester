@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import styles from "./style.module.css";
+import { FiFilm, FiSearch, FiList, FiSettings } from "react-icons/fi";
 
 export const Navigation: React.FC = () => {
   const pathname = usePathname();
@@ -14,7 +15,8 @@ export const Navigation: React.FC = () => {
     <nav className={styles.nav}>
       <div className={styles.container}>
         <Link href="/" className={styles.logo}>
-          🎬 Media Tracker
+          <FiFilm className={styles.logoIcon} aria-hidden="true" />
+          <span className={styles.logoText}>Media Tracker</span>
         </Link>
 
         <ul className={styles.links}>
@@ -23,7 +25,8 @@ export const Navigation: React.FC = () => {
               href="/search"
               className={`${styles.link} ${isActive("/search") ? styles.active : ""}`}
             >
-              🔍 Search
+              <FiSearch className={styles.linkIcon} aria-hidden="true" />
+              <span className={styles.linkText}>Search</span>
             </Link>
           </li>
           <li>
@@ -31,7 +34,8 @@ export const Navigation: React.FC = () => {
               href="/list"
               className={`${styles.link} ${isActive("/list") ? styles.active : ""}`}
             >
-              📋 My List
+              <FiList className={styles.linkIcon} aria-hidden="true" />
+              <span className={styles.linkText}>My List</span>
             </Link>
           </li>
           <li>
@@ -39,7 +43,8 @@ export const Navigation: React.FC = () => {
               href="/settings"
               className={`${styles.link} ${isActive("/settings") ? styles.active : ""}`}
             >
-              ⚙️ Settings
+              <FiSettings className={styles.linkIcon} aria-hidden="true" />
+              <span className={styles.linkText}>Settings</span>
             </Link>
           </li>
         </ul>

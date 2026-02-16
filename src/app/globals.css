@@ -2,40 +2,40 @@
 
 :root {
   /* Primary */
-  --color-primary-50: #ebe9fe;
-  --color-primary-100: #dedbfd;
-  --color-primary-200: #beb7fb;
-  --color-primary-300: #9c92f8;
-  --color-primary-400: #7b6ef6;
-  --color-primary-500: #5a4af4;
-  --color-primary-600: #483bc3;
-  --color-primary-700: #362c92;
-  --color-primary-800: #251e62;
-  --color-primary-900: #120f31;
+  --color-primary-50: #fff8e6;
+  --color-primary-100: #ffefc1;
+  --color-primary-200: #ffe29a;
+  --color-primary-300: #ffd066;
+  --color-primary-400: #ffbf3b;
+  --color-primary-500: #f5a524;
+  --color-primary-600: #d1841c;
+  --color-primary-700: #a36314;
+  --color-primary-800: #70420c;
+  --color-primary-900: #3d2306;
 
   /* Secondary */
-  --color-secondary-50: #e4f4ff;
-  --color-secondary-100: #d2ecfe;
-  --color-secondary-200: #a5dbfe;
-  --color-secondary-300: #78c8fd;
-  --color-secondary-400: #4bb7fd;
-  --color-secondary-500: #1ea5fc;
-  --color-secondary-600: #1884ca;
-  --color-secondary-700: #126297;
-  --color-secondary-800: #0c4265;
-  --color-secondary-900: #062032;
+  --color-secondary-50: #e7f5ff;
+  --color-secondary-100: #cfe9ff;
+  --color-secondary-200: #a1d4ff;
+  --color-secondary-300: #73bfff;
+  --color-secondary-400: #45aaff;
+  --color-secondary-500: #1f8cff;
+  --color-secondary-600: #1870cc;
+  --color-secondary-700: #125499;
+  --color-secondary-800: #0c3966;
+  --color-secondary-900: #061d33;
 
   /* Tertiary */
-  --color-tertiary-50: #f6edff;
-  --color-tertiary-100: #f0e2ff;
-  --color-tertiary-200: #e2c5ff;
-  --color-tertiary-300: #d3a7ff;
-  --color-tertiary-400: #c58aff;
-  --color-tertiary-500: #b66dff;
-  --color-tertiary-600: #9257cc;
-  --color-tertiary-700: #6d4199;
-  --color-tertiary-800: #492c66;
-  --color-tertiary-900: #241633;
+  --color-tertiary-50: #ffe9ec;
+  --color-tertiary-100: #ffd3da;
+  --color-tertiary-200: #ffadb9;
+  --color-tertiary-300: #ff8799;
+  --color-tertiary-400: #ff6178;
+  --color-tertiary-500: #ff3b58;
+  --color-tertiary-600: #cc2f46;
+  --color-tertiary-700: #992335;
+  --color-tertiary-800: #661723;
+  --color-tertiary-900: #330b12;
 
   /* Success */
   --color-success-50: #e1f9f2;
@@ -114,7 +114,10 @@ body {
   font-size: 1rem;
   line-height: 1.6;
   color: var(--color-grey-50);
-  background: url('/Background.svg') no-repeat center center fixed, var(--color-primary-900);
+  background:
+    radial-gradient(circle at top, rgba(245, 165, 36, 0.15), transparent 50%),
+    url('/Background.svg') no-repeat center center fixed,
+    var(--color-grey-900);
   background-size: cover;
   background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
@@ -148,7 +151,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Links */
 a {
-  color: #007bff;
+  color: var(--color-secondary-400);
   text-decoration: none;
 }
 

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useContext, useRef } from "react";
+import { FiUploadCloud } from "react-icons/fi";
 import { MovieContext } from "@/app/context/MovieContext";
 import { exportUtils } from "@/utils/export";
 import { importUtils } from "@/utils/import";
@@ -172,7 +173,9 @@ export default function SettingsPage() {
             id="file-input"
           />
           <label htmlFor="file-input" className={styles.uploadLabel}>
-            <span className={styles.icon}>📁</span>
+            <span className={styles.icon} aria-hidden="true">
+              <FiUploadCloud />
+            </span>
             <span className={styles.text}>
               Click to select JSON file or drag and drop
             </span>

@@ -21,10 +21,6 @@ export type MediaItem = {
 // State tipi
 interface MovieState {
 	items: MediaItem[];
-	filters: {
-		genre: string | null;
-		yearRange: [number, number] | null;
-	};
 }
 
 // Action tipi
@@ -32,8 +28,7 @@ type MovieAction =
 	| { type: "SET_ITEMS"; payload: MediaItem[] }
 	| { type: "ADD_ITEM"; payload: MediaItem }
 	| { type: "REMOVE_ITEM"; payload: { id: string } }
-	| { type: "UPDATE_ITEM"; payload: MediaItem }
-	| { type: "SET_FILTERS"; payload: { genre: string | null; yearRange: [number, number] | null } };
+	| { type: "UPDATE_ITEM"; payload: MediaItem };
 
 // Reducer
 const movieReducer = (state: MovieState, action: MovieAction): MovieState => {
@@ -46,8 +41,6 @@ const movieReducer = (state: MovieState, action: MovieAction): MovieState => {
 			return { ...state, items: state.items.filter((i) => i.id !== action.payload.id) };
 		case "UPDATE_ITEM":
 			return { ...state, items: state.items.map((i) => (i.id === action.payload.id ? action.payload : i)) };
-		case "SET_FILTERS":
-			return { ...state, filters: action.payload };
 		default:
 			return state;
 	}
@@ -63,7 +56,6 @@ const MovieContext = createContext<{
 const MovieProvider = ({ children }: { children: ReactNode }) => {
 	const initialState: MovieState = {
 		items: [],
-		filters: { genre: null, yearRange: null },
 	};
 
 	const [state, dispatch] = useReducer(movieReducer, initialState);

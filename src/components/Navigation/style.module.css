@@ -20,15 +20,21 @@
 .logo {
   font-size: 1.35rem;
   font-weight: 800;
-  background: linear-gradient(135deg, var(--color-secondary-500) 0%, var(--color-tertiary-500) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #ffffff;
   text-decoration: none;
   display: flex;
   align-items: center;
   gap: 0.5rem;
   transition: all 0.3s ease;
+}
+
+.logoIcon {
+  width: 18px;
+  height: 18px;
+}
+
+.logoText {
+  display: inline-block;
 }
 
 .logo:hover {
@@ -48,6 +54,7 @@
   height: 65px;
   display: flex;
   align-items: center;
+  gap: 0.5rem;
   text-decoration: none;
   color: var(--color-grey-300);
   font-weight: 600;
@@ -57,14 +64,23 @@
   position: relative;
 }
 
+.linkIcon {
+  width: 16px;
+  height: 16px;
+}
+
+.linkText {
+  display: inline-block;
+}
+
 .link:hover {
-  color: var(--color-secondary-500);
-  background: rgba(90, 74, 244, 0.1);
+  color: #7b6ef7;
+  background: rgba(123, 110, 247, 0.12);
 }
 
 .link.active {
-  color: var(--color-secondary-500);
-  border-bottom-color: var(--color-secondary-500);
+  color: #ffffff;
+  border-bottom-color: #ffffff;
 }
 
 @media (max-width: 768px) {
@@ -72,12 +88,24 @@
     height: 60px;
   }
 
+  .link {
+    padding: 0 1rem;
+    font-size: 0.85rem;
+  }
+
+  .logoText {
+    display: none;
+  }
+
+  .linkText {
+    display: none;
+  }
+
   .logo {
     font-size: 1.2rem;
   }
 
   .link {
-    padding: 0 1rem;
-    font-size: 0.85rem;
+    padding: 0 0.9rem;
   }
 }
