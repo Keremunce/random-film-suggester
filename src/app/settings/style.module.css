@@ -110,12 +110,27 @@
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
   transition: all 0.2s ease;
 }
 
 .btn:hover {
   background: #6a5ff0;
   border-color: #6a5ff0;
+}
+
+.btnSecondary {
+  background: transparent;
+  color: #cbd5f5;
+  border: 1px solid rgba(123, 110, 247, 0.45);
+}
+
+.btnSecondary:hover {
+  background: rgba(123, 110, 247, 0.12);
+  border-color: rgba(123, 110, 247, 0.7);
 }
 
 /* Upload */

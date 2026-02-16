@@ -183,6 +183,11 @@ export default function MyListPage() {
     return rerollCount < 1;
   }, [rerollCount, suggestedAt, suggestedItem]);
 
+  const isSuggestionLocked = useMemo(() => {
+    if (suggestedAt === null) return false;
+    return Date.now() - suggestedAt < ONE_DAY_MS;
+  }, [suggestedAt]);
+
   const handleJokerReroll = () => {
     if (!allowJokerReroll || !suggestedItem || suggestedAt === null) return;
     const candidates = state.items.filter(
@@ -246,11 +251,14 @@ export default function MyListPage() {
           type="button"
           className={styles.suggestButton}
           onClick={handleSuggest}
+          disabled={isSuggestionLocked}
         >
           <span className={styles.suggestText}>
             <span className={styles.suggestTitle}>Suggest Me</span>
             <span className={styles.suggestSubtitle}>
-              One pick per 24h. One reroll max.
+              {isSuggestionLocked
+                ? "Locked for 24h. Come back later."
+                : "One pick per 24h. One reroll max."}
             </span>
           </span>
           <span className={styles.suggestOrnament} aria-hidden="true">

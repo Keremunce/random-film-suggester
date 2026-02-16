@@ -1,8 +1,10 @@
 "use client";
 
-import React, { useContext, useRef } from "react";
-import { FiUploadCloud } from "react-icons/fi";
+import React, { useContext, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { FiFilm, FiTv, FiUploadCloud } from "react-icons/fi";
 import { MovieContext } from "@/app/context/MovieContext";
+import { StatusModal } from "@/components/StatusModal";
 import { exportUtils } from "@/utils/export";
 import { importUtils } from "@/utils/import";
 import styles from "./style.module.css";
@@ -14,12 +16,39 @@ export default function SettingsPage() {
   const context = useContext(MovieContext);
   if (!context) throw new Error("MovieContext not found");
 
+  const router = useRouter();
   const { state, dispatch } = context;
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [modal, setModal] = useState<{
+    open: boolean;
+    variant: "success" | "error";
+    title: string;
+    description: string;
+    actionLabel: string;
+  }>({
+    open: false,
+    variant: "success",
+    title: "",
+    description: "",
+    actionLabel: "",
+  });
+
+  const openModal = (next: Omit<typeof modal, "open">) => {
+    setModal({ ...next, open: true });
+  };
+
+  const closeModal = () => {
+    setModal((prev) => ({ ...prev, open: false }));
+  };
 
   const handleExport = (format: ExportFormat, filter: ExportFilter) => {
     if (state.items.length === 0) {
-      alert("No items to export");
+      openModal({
+        variant: "error",
+        title: "Nothing to export",
+        description: "Your library is empty. Add items before exporting.",
+        actionLabel: "Go to My List",
+      });
       return;
     }
 
@@ -28,6 +57,13 @@ export default function SettingsPage() {
     } else {
       exportUtils.toCSV(state.items, filter);
     }
+
+    openModal({
+      variant: "success",
+      title: "Export started",
+      description: "Your download should start automatically.",
+      actionLabel: "Go to My List",
+    });
   };
 
   const handleImport = async (file: File) => {
@@ -45,11 +81,21 @@ export default function SettingsPage() {
         dispatch({ type: "ADD_ITEM", payload: item });
       });
 
-      alert(`Imported ${newItems.length} new items. ${imported.length - newItems.length} duplicates skipped.`);
+      openModal({
+        variant: "success",
+        title: "Import complete",
+        description: `Imported ${newItems.length} new items. ${imported.length - newItems.length} duplicates skipped.`,
+        actionLabel: "Go to My List",
+      });
       if (fileInputRef.current) fileInputRef.current.value = "";
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Failed to import";
-      alert(`Import error: ${msg}`);
+      openModal({
+        variant: "error",
+        title: "Import failed",
+        description: `Import error: ${msg}`,
+        actionLabel: "Try Again",
+      });
     }
   };
 
@@ -118,14 +164,16 @@ export default function SettingsPage() {
               </button>
               <button
                 onClick={() => handleExport("json", "movies")}
-                className={styles.btn}
+                className={`${styles.btn} ${styles.btnSecondary}`}
               >
+                <FiFilm aria-hidden="true" />
                 Movies Only
               </button>
               <button
                 onClick={() => handleExport("json", "series")}
-                className={styles.btn}
+                className={`${styles.btn} ${styles.btnSecondary}`}
               >
+                <FiTv aria-hidden="true" />
                 Series Only
               </button>
             </div>
@@ -143,14 +191,16 @@ export default function SettingsPage() {
               </button>
               <button
                 onClick={() => handleExport("csv", "movies")}
-                className={styles.btn}
+                className={`${styles.btn} ${styles.btnSecondary}`}
               >
+                <FiFilm aria-hidden="true" />
                 Movies Only
               </button>
               <button
                 onClick={() => handleExport("csv", "series")}
-                className={styles.btn}
+                className={`${styles.btn} ${styles.btnSecondary}`}
               >
+                <FiTv aria-hidden="true" />
                 Series Only
               </button>
             </div>
@@ -206,6 +256,23 @@ export default function SettingsPage() {
           Clear All Data
         </button>
       </section>
+
+      <StatusModal
+        open={modal.open}
+        variant={modal.variant}
+        title={modal.title}
+        description={modal.description}
+        actionLabel={modal.actionLabel}
+        onAction={() => {
+          if (modal.actionLabel === "Try Again") {
+            closeModal();
+            return;
+          }
+          closeModal();
+          router.push("/list");
+        }}
+        onClose={closeModal}
+      />
     </div>
   );
 }
