@@ -216,6 +216,10 @@
   color: var(--color-grey-50);
 }
 
+.latestSegmented {
+  --segmented-width: auto;
+  --segmented-button-flex: 0 0 auto;
+}
 
 .latestGrid {
   display: grid;
@@ -514,7 +518,8 @@
   }
 
   .latestSegmented {
-    width: 100%;
+    --segmented-width: 100%;
+    --segmented-button-flex: 1 1 0;
   }
 
   .latestGrid {

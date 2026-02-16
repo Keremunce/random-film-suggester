@@ -286,7 +286,6 @@ export default function HomePage() {
 						value={latestFilter}
 						onChange={setLatestFilter}
 						className={styles.latestSegmented}
-						stretch
 						options={[
 							{ value: "movie", label: "Movies" },
 							{ value: "tv", label: "Series" },

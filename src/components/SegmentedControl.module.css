@@ -5,14 +5,16 @@
   background: rgba(18, 24, 41, 0.65);
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.08);
+  width: var(--segmented-width, auto);
 }
 
 .stretch {
-  width: 100%;
+  --segmented-width: 100%;
+  --segmented-button-flex: 1 1 0;
 }
 
 .stretch .button {
-  flex: 1;
+  flex: var(--segmented-button-flex, 0 0 auto);
 }
 
 .button {
@@ -26,6 +28,7 @@
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
+  flex: var(--segmented-button-flex, 0 0 auto);
 }
 
 .button:hover {
