@@ -56,6 +56,13 @@ export default function HomePage() {
 		width: 0,
 		top: 0,
 	});
+	const heroTimeClass = useMemo(() => {
+		const hour = new Date().getHours();
+		if (hour >= 5 && hour < 9) return styles.heroSunrise;
+		if (hour >= 9 && hour < 16) return styles.heroNoon;
+		if (hour >= 16 && hour < 20) return styles.heroEvening;
+		return styles.heroNight;
+	}, []);
 
 	const stats = {
 		total: state.items.length,
@@ -216,7 +223,7 @@ export default function HomePage() {
 
 	return (
 		<div className={styles.page}>
-			<div className={styles.hero}>
+			<div className={`${styles.hero} ${heroTimeClass}`}>
 				<div className={styles.heroContent}>
 					<h1 className={styles.heroTitle}>My Watchlist, Your Inspiration</h1>
 					<p className={styles.heroSubtitle}>

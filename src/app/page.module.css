@@ -5,7 +5,10 @@
 }
 
 .hero {
-  background: linear-gradient(135deg, var(--color-primary-500) 0%, var(--color-secondary-500) 100%);
+  background: var(
+    --hero-gradient,
+    linear-gradient(135deg, #ffb36b 0%, #ffd49a 55%, #ffe9c7 100%)
+  );
   padding: 5rem 2rem 4rem 2rem;
   text-align: left;
   color: white;
@@ -17,6 +20,22 @@
   justify-content: space-between;
   gap: 2rem;
   z-index: 3;
+}
+
+.heroSunrise {
+  --hero-gradient: linear-gradient(135deg, #ffb36b 0%, #ffd49a 55%, #ffe9c7 100%);
+}
+
+.heroNoon {
+  --hero-gradient: linear-gradient(135deg, #6ecbff 0%, #8fe6ff 45%, #b3f2ff 100%);
+}
+
+.heroEvening {
+  --hero-gradient: linear-gradient(135deg, #ff6f61 0%, #ff9f68 45%, #ffd1a1 100%);
+}
+
+.heroNight {
+  --hero-gradient: linear-gradient(135deg, #0f172a 0%, #1a2345 50%, #243b6b 100%);
 }
 
 .hero::before {
