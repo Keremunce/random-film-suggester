@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import { StarRating } from "@/components/StarRating";
 import styles from "./style.module.css";
 
@@ -43,7 +44,13 @@ export const SearchResult: React.FC<SearchResultProps> = ({
   return (
     <div className={styles.result}>
       <div className={styles.poster}>
-        <img src={posterUrl} alt={title} loading="lazy" />
+        <Image
+          src={posterUrl}
+          alt={title}
+          width={100}
+          height={150}
+          className={styles.posterImage}
+        />
       </div>
 
       <div className={styles.info}>

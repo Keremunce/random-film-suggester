@@ -2,6 +2,7 @@
 
 import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { MovieContext } from "@/app/context/MovieContext";
 import { SegmentedControl } from "@/components/SegmentedControl";
 import styles from "./page.module.css";
@@ -73,7 +74,7 @@ export default function HomePage() {
 				const data = await res.json();
 				if (!isMounted) return;
 				setLatestData(data);
-			} catch (err) {
+			} catch {
 				if (!isMounted) return;
 				setLatestError("Failed to load new releases.");
 				setLatestData({ movies: [], series: [] });
@@ -108,7 +109,7 @@ export default function HomePage() {
 				if (!res.ok) throw new Error("Search failed");
 				const data = await res.json();
 				setSearchResults(data.results || []);
-			} catch (err) {
+			} catch {
 				setSearchError("Failed to search. Please try again.");
 				setSearchResults([]);
 			} finally {
@@ -351,14 +352,16 @@ export default function HomePage() {
 										</button>
 									</div>
 									<div className={styles.latestPoster}>
-										<img
+										<Image
 											src={
 												item.posterPath
 													? `https://image.tmdb.org/t/p/w342${item.posterPath}`
 													: "https://via.placeholder.com/342x513?text=No+Poster"
 											}
 											alt={item.title}
-											loading="lazy"
+											fill
+											sizes="(max-width: 520px) 90vw, (max-width: 768px) 45vw, 23vw"
+											className={styles.latestPosterImage}
 										/>
 									</div>
 									<div className={styles.latestInfo}>

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useContext, useEffect, useMemo, useState } from "react";
+import Image from "next/image";
 import { useParams } from "next/navigation";
 import { MovieContext } from "@/app/context/MovieContext";
 import { StarRating } from "@/components/StarRating";
@@ -48,7 +49,7 @@ export default function MovieDetail() {
 				const data = (await res.json()) as MediaDetail;
 				if (!isMounted) return;
 				setDetail(data);
-			} catch (err) {
+			} catch {
 				if (!isMounted) return;
 				setError("Failed to load details. Please try again.");
 			} finally {
@@ -134,7 +135,13 @@ export default function MovieDetail() {
 
 			<div className={styles.content}>
 				<div className={styles.poster}>
-					<img src={posterUrl} alt={detail.title} />
+					<Image
+						src={posterUrl}
+						alt={detail.title}
+						width={500}
+						height={750}
+						className={styles.posterImage}
+					/>
 				</div>
 
 				<div className={styles.info}>

@@ -14,6 +14,7 @@
 }
 
 .poster {
+  position: relative;
   width: 100%;
   aspect-ratio: 2 / 3;
   overflow: hidden;
@@ -21,9 +22,7 @@
   background: rgba(255, 255, 255, 0.08);
 }
 
-.poster img {
-  width: 100%;
-  height: 100%;
+.posterImage {
   object-fit: cover;
 }
 

@@ -23,7 +23,7 @@
   background: rgba(255, 255, 255, 0.08);
 }
 
-.poster img {
+.posterImage {
   width: 100%;
   height: 100%;
   object-fit: cover;

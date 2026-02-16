@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 const BASE_URL = "https://api.themoviedb.org/3";
 
@@ -67,12 +67,12 @@ const fetchJson = async (url: string) => {
 };
 
 export async function GET(
-  _request: Request,
-  { params }: { params: { id: string } }
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const apiKey = getApiKey();
-    const id = params.id;
+    const { id } = await params;
 
     try {
       const data = (await fetchJson(

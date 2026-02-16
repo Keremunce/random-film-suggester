@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { MovieContext, MediaItem } from "@/app/context/MovieContext";
 import styles from "./style.module.css";
 
@@ -19,7 +20,7 @@ export default function SuggestMePage() {
 	const [suggestion, setSuggestion] = useState<MediaItem | null>(null);
 	const [spin, setSpin] = useState(false);
 
-	const pickRandom = () => {
+	const pickRandom = useCallback(() => {
 		if (watchedItems.length === 0) {
 			setSuggestion(null);
 			return;
@@ -27,11 +28,11 @@ export default function SuggestMePage() {
 		const next =
 			watchedItems[Math.floor(Math.random() * watchedItems.length)];
 		setSuggestion(next);
-	};
+	}, [watchedItems]);
 
 	useEffect(() => {
 		pickRandom();
-	}, [watchedItems.length]);
+	}, [pickRandom]);
 
 	return (
 		<div className={styles.page}>
@@ -52,13 +53,16 @@ export default function SuggestMePage() {
 			{suggestion && (
 				<div className={styles.card}>
 					<div className={styles.poster}>
-						<img
+						<Image
 							src={
 								suggestion.posterPath
 									? `${POSTER_BASE}${suggestion.posterPath}`
 									: "https://via.placeholder.com/342x513?text=No+Poster"
 							}
 							alt={suggestion.title}
+							width={342}
+							height={513}
+							className={styles.posterImage}
 						/>
 					</div>
 					<div className={styles.info}>

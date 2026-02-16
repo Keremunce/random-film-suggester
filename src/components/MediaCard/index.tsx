@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import { MediaItem } from "@/app/context/MovieContext";
 import { StarRating } from "@/components/StarRating";
 import { FiEye, FiEyeOff } from "react-icons/fi";
@@ -35,7 +36,13 @@ export const MediaCard: React.FC<MediaCardProps> = ({
   return (
     <div className={styles.card}>
       <div className={styles.poster}>
-        <img src={posterUrl} alt={item.title} loading="lazy" />
+        <Image
+          src={posterUrl}
+          alt={item.title}
+          fill
+          sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 200px"
+          className={styles.posterImage}
+        />
       </div>
 
       <div className={styles.content}>

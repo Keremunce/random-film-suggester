@@ -1,6 +1,13 @@
 "use client";
 
-import React, { useState, useContext, useCallback, useRef, useEffect } from "react";
+import React, {
+  Suspense,
+  useState,
+  useContext,
+  useCallback,
+  useRef,
+  useEffect,
+} from "react";
 import { useSearchParams } from "next/navigation";
 import { SearchResult } from "@/components/SearchResult";
 import { MovieContext } from "@/app/context/MovieContext";
@@ -18,7 +25,7 @@ interface SearchResultData {
   voteAverage: number | null;
 }
 
-export default function SearchPage() {
+function SearchPageContent() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResultData[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -47,7 +54,7 @@ export default function SearchPage() {
 
       const data = await res.json();
       setResults(data.results || []);
-    } catch (err) {
+    } catch {
       setError("Failed to search. Please try again.");
       setResults([]);
     } finally {
@@ -139,5 +146,13 @@ export default function SearchPage() {
         ))}
       </div>
     </div>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={<div className={styles.loading}>Loading...</div>}>
+      <SearchPageContent />
+    </Suspense>
   );
 }
