@@ -24,6 +24,315 @@
   margin-bottom: 1.5rem;
 }
 
+.suggestBanner {
+  margin-bottom: 1.5rem;
+}
+
+.suggestButton {
+  width: 100%;
+  border: none;
+  border-radius: 18px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background: linear-gradient(135deg, #69c6ff 0%, #7dd3fc 45%, #93c5fd 100%);
+  color: #0b1d39;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.35);
+  transition: transform 220ms ease, box-shadow 220ms ease;
+}
+
+.suggestButton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.18), transparent 55%);
+  opacity: 0.6;
+  transition: opacity 220ms ease;
+}
+
+.suggestButton:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 24px 50px rgba(15, 23, 42, 0.45);
+}
+
+.suggestButton:hover::after {
+  opacity: 0.9;
+}
+
+.suggestText {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  text-align: left;
+  position: relative;
+  z-index: 1;
+}
+
+.suggestTitle {
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.suggestSubtitle {
+  font-size: 0.9rem;
+  color: rgba(11, 29, 57, 0.75);
+}
+
+.suggestOrnament {
+  width: 180px;
+  height: 80px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+  transform: translateY(2px);
+  transition: transform 220ms ease;
+}
+
+.suggestOrnament svg {
+  width: 100%;
+  height: 100%;
+}
+
+.suggestButton:hover .suggestOrnament {
+  transform: translateY(-4px) rotate(-2deg);
+}
+
+.suggestNote {
+  margin-top: 0.6rem;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.35);
+  color: #dbe7ff;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.diceButton {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  border: 1px solid rgba(248, 251, 255, 0.35);
+  background: rgba(15, 23, 42, 0.65);
+  color: #f8fbff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 200ms ease, box-shadow 200ms ease;
+  flex-shrink: 0;
+}
+
+.diceButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+.diceButton svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  fill: none;
+}
+
+.diceButton svg circle {
+  fill: currentColor;
+  stroke: none;
+}
+
+.diceButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.35);
+}
+
+.diceAnimating {
+  animation: diceRoll 650ms ease;
+}
+
+@keyframes diceRoll {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  40% {
+    transform: rotate(180deg) scale(1.12);
+  }
+  70% {
+    transform: rotate(300deg) scale(0.96);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+.suggestedSection {
+  margin-bottom: 1.5rem;
+}
+
+.suggestedCard {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 1.25rem;
+  background: rgba(15, 23, 42, 0.4);
+  border-radius: 16px;
+  padding: 1rem;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.3);
+}
+
+.suggestedPoster {
+  position: relative;
+  width: 140px;
+  aspect-ratio: 2 / 3;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.suggestedPosterImage {
+  object-fit: cover;
+}
+
+.suggestedContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.6rem;
+}
+
+.suggestedEyebrow {
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 0.65rem;
+  color: rgba(226, 232, 240, 0.7);
+  margin: 0;
+}
+
+.suggestedTitle {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #f8fbff;
+}
+
+.suggestedMeta {
+  margin: 0;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  color: rgba(226, 232, 240, 0.8);
+  font-size: 0.9rem;
+}
+
+.suggestedMeta span {
+  color: rgba(226, 232, 240, 0.55);
+}
+
+.confetti {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 40;
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+.confettiActive {
+  opacity: 1;
+}
+
+.confettiLeft,
+.confettiRight {
+  position: absolute;
+  bottom: -10px;
+  width: 40%;
+  height: 40%;
+}
+
+.confettiLeft {
+  left: 0;
+}
+
+.confettiRight {
+  right: 0;
+}
+
+.confettiPiece {
+  position: absolute;
+  width: 10px;
+  height: 16px;
+  border-radius: 3px;
+  left: calc(4% + (var(--i) * 6%));
+  bottom: 0;
+  opacity: 0;
+  background: linear-gradient(135deg, #fbbf24, #f97316);
+}
+
+.confettiLeft .confettiPiece:nth-child(3n) {
+  background: linear-gradient(135deg, #38bdf8, #818cf8);
+}
+
+.confettiLeft .confettiPiece:nth-child(4n) {
+  background: linear-gradient(135deg, #22c55e, #a3e635);
+}
+
+.confettiRight .confettiPiece:nth-child(3n) {
+  background: linear-gradient(135deg, #f472b6, #fb7185);
+}
+
+.confettiRight .confettiPiece:nth-child(4n) {
+  background: linear-gradient(135deg, #60a5fa, #34d399);
+}
+
+.confettiActive .confettiLeft .confettiPiece {
+  animation: confettiLeft 1.6s ease-out forwards;
+  animation-delay: var(--delay);
+}
+
+.confettiActive .confettiRight .confettiPiece {
+  animation: confettiRight 1.6s ease-out forwards;
+  animation-delay: var(--delay);
+}
+
+@keyframes confettiLeft {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(200px, -280px) rotate(220deg);
+    opacity: 0;
+  }
+}
+
+@keyframes confettiRight {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-200px, -280px) rotate(-220deg);
+    opacity: 0;
+  }
+}
+
 .searchInput {
   width: 100%;
   padding: 0.85rem 1rem;
@@ -101,6 +410,24 @@
 
   .items {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .suggestButton {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .suggestOrnament {
+    width: 140px;
+    height: 64px;
+  }
+
+  .suggestedCard {
+    grid-template-columns: 1fr;
+  }
+
+  .suggestedPoster {
+    width: 100%;
   }
 }
 
