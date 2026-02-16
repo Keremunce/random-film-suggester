@@ -16,6 +16,7 @@
   display: flex;
   justify-content: space-between;
   gap: 2rem;
+  z-index: 3;
 }
 
 .hero::before {
@@ -25,16 +26,43 @@
   right: -10%;
   width: 400px;
   height: 400px;
-  background: rgba(255, 255, 255, 0.1);
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0) 62%);
   border-radius: 50%;
-  animation: float 6s ease-in-out infinite;
+  animation: breathe 5s ease-in-out infinite;
+  filter: blur(0.5px);
+  opacity: 0.95;
 }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(30px); }
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -45%;
+  left: -15%;
+  width: 520px;
+  height: 520px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 60% 40%, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0) 62%),
+    radial-gradient(circle at 20% 70%, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0) 55%);
+  animation: breathe 5s ease-in-out infinite reverse;
+  filter: blur(2px);
+  opacity: 0.85;
 }
 
+@keyframes breathe {
+  0% {
+    transform: scale(0.94) translateY(2px);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.06) translateY(-16px);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.94) translateY(2px);
+    opacity: 0.6;
+  }
+}
 .heroTitle {
   font-size: 3.25rem;
   font-weight: 800;
