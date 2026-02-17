@@ -1,7 +1,9 @@
 .page {
   position: relative;
-  padding: 2.5rem 2rem 4rem 2rem;
-  overflow: hidden;
+  padding: 2.5rem 1.5rem 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
 }
 
 .backdrop {
@@ -9,9 +11,10 @@
   inset: 0;
   background-size: cover;
   background-position: center;
-  filter: blur(16px) saturate(120%);
-  opacity: 0.3;
-  transform: scale(1.05);
+  filter: blur(18px) saturate(120%);
+  opacity: 0.25;
+  transform: scale(1.08);
+  z-index: 0;
 }
 
 .content {
@@ -25,7 +28,7 @@
 }
 
 .poster {
-  border-radius: 16px;
+  border-radius: 18px;
   overflow: hidden;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
 }
@@ -59,7 +62,7 @@
 
 .title {
   margin: 0;
-  font-size: 2.6rem;
+  font-size: clamp(2rem, 4vw, 2.75rem);
   color: #ffffff;
   font-weight: 800;
   letter-spacing: -0.02em;
@@ -129,12 +132,6 @@
   border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
-.creators {
-  margin: 0;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.95rem;
-}
-
 .ratingBlock {
   display: flex;
   flex-direction: column;
@@ -154,6 +151,135 @@
   font-size: 0.9rem;
 }
 
+.section {
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  z-index: 1;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.sectionHeader h2 {
+  margin: 0;
+}
+
+.sectionLink {
+  color: rgba(255, 255, 255, 0.65);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.castGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+}
+
+.castCard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: rgba(18, 24, 41, 0.6);
+  border-radius: 16px;
+  padding: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.castImage {
+  border-radius: 12px;
+  width: 100%;
+  height: auto;
+}
+
+.castName {
+  margin: 0;
+  font-weight: 600;
+}
+
+.castRole {
+  margin: 0.25rem 0 0 0;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.85rem;
+}
+
+.providerRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.providerCard {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.8rem;
+  border-radius: 999px;
+  background: rgba(18, 24, 41, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.85rem;
+}
+
+.providerLogo {
+  border-radius: 8px;
+}
+
+.recommendationsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1.25rem;
+}
+
+.recommendationCard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: inherit;
+  background: rgba(18, 24, 41, 0.6);
+  border-radius: 18px;
+  padding: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.recommendationPoster {
+  position: relative;
+  width: 100%;
+  padding-top: 150%;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.recommendationImage {
+  object-fit: cover;
+}
+
+.recommendationInfo p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #ffffff;
+}
+
+.recommendationInfo span {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.empty {
+  color: rgba(255, 255, 255, 0.65);
+}
+
 .state {
   padding: 3rem 2rem;
   text-align: center;
@@ -167,15 +293,5 @@
 
   .poster {
     max-width: 320px;
-  }
-}
-
-@media (max-width: 600px) {
-  .page {
-    padding: 2rem 1.5rem 3rem 1.5rem;
-  }
-
-  .title {
-    font-size: 2rem;
   }
 }

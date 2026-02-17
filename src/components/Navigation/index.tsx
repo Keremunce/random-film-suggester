@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import styles from "./style.module.css";
-import { FiFilm, FiSearch, FiList, FiSettings } from "react-icons/fi";
+import { FiFilm, FiList, FiSettings, FiCompass } from "react-icons/fi";
 
 export const Navigation: React.FC = () => {
   const pathname = usePathname();
@@ -22,11 +22,11 @@ export const Navigation: React.FC = () => {
         <ul className={styles.links}>
           <li>
             <Link
-              href="/search"
-              className={`${styles.link} ${isActive("/search") ? styles.active : ""}`}
+              href="/explore"
+              className={`${styles.link} ${isActive("/explore") ? styles.active : ""}`}
             >
-              <FiSearch className={styles.linkIcon} aria-hidden="true" />
-              <span className={styles.linkText}>Search</span>
+              <FiCompass className={styles.linkIcon} aria-hidden="true" />
+              <span className={styles.linkText}>Explore</span>
             </Link>
           </li>
           <li>

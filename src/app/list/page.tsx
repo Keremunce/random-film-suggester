@@ -35,6 +35,7 @@ export default function MyListPage() {
   const [rerollCount, setRerollCount] = useState(0);
   const [suggestedAt, setSuggestedAt] = useState<number | null>(null);
   const [diceAnimating, setDiceAnimating] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const confettiTimerRef = useRef<NodeJS.Timeout | null>(null);
   const diceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -78,6 +79,63 @@ export default function MyListPage() {
     dispatch({ type: "REMOVE_ITEM", payload: { id } });
   };
 
+  const selectedItems = useMemo(
+    () => state.items.filter((item) => selectedIds.has(item.id)),
+    [selectedIds, state.items],
+  );
+
+  const selectedCount = selectedItems.length;
+  const selectedWatchlistCount = selectedItems.filter(
+    (item) => item.status === "watchlist",
+  ).length;
+  const visibleIds = useMemo(() => sortedItems.map((item) => item.id), [sortedItems]);
+  const allVisibleSelected = useMemo(
+    () => visibleIds.length > 0 && visibleIds.every((id) => selectedIds.has(id)),
+    [selectedIds, visibleIds],
+  );
+
+  const handleSelectChange = (id: string, checked: boolean) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (checked) {
+        next.add(id);
+      } else {
+        next.delete(id);
+      }
+      return next;
+    });
+  };
+
+  const clearSelection = () => {
+    setSelectedIds(new Set());
+  };
+
+  const handleSelectAllVisible = () => {
+    if (allVisibleSelected) {
+      clearSelection();
+      return;
+    }
+    setSelectedIds(new Set(visibleIds));
+  };
+
+  const handleBulkStatus = (status: "watched" | "watchlist") => {
+    selectedItems.forEach((item) => {
+      if (item.status !== status) {
+        dispatch({ type: "UPDATE_ITEM", payload: { ...item, status } });
+      }
+    });
+    clearSelection();
+  };
+
+  const handleBulkRemoveWatchlist = () => {
+    selectedItems.forEach((item) => {
+      if (item.status === "watchlist") {
+        dispatch({ type: "REMOVE_ITEM", payload: { id: item.id } });
+      }
+    });
+    clearSelection();
+  };
+
   useEffect(() => {
     return () => {
       if (confettiTimerRef.current) clearTimeout(confettiTimerRef.current);
@@ -110,6 +168,16 @@ export default function MyListPage() {
     } catch {
       window.localStorage.removeItem(SUGGESTION_STORAGE_KEY);
     }
+  }, [state.items]);
+
+  useEffect(() => {
+    setSelectedIds((prev) => {
+      const next = new Set<string>();
+      state.items.forEach((item) => {
+        if (prev.has(item.id)) next.add(item.id);
+      });
+      return next.size === prev.size ? prev : next;
+    });
   }, [state.items]);
 
   const triggerConfetti = () => {
@@ -401,6 +469,55 @@ export default function MyListPage() {
         </div>
       </div>
 
+      {sortedItems.length > 0 && (
+        <div className={styles.selectRow}>
+          <button
+            type="button"
+            className={styles.selectAllButton}
+            onClick={handleSelectAllVisible}
+          >
+            {allVisibleSelected ? "Clear selection" : "Select all"}
+          </button>
+        </div>
+      )}
+
+      {selectedCount > 0 && (
+        <div className={styles.bulkBar}>
+          <p className={styles.bulkCount}>{selectedCount} selected</p>
+          <div className={styles.bulkActions}>
+            <button
+              type="button"
+              className={styles.bulkButton}
+              onClick={() => handleBulkStatus("watched")}
+            >
+              Mark as Watched
+            </button>
+            <button
+              type="button"
+              className={styles.bulkButton}
+              onClick={() => handleBulkStatus("watchlist")}
+            >
+              Mark as Unwatched
+            </button>
+            <button
+              type="button"
+              className={styles.bulkButton}
+              onClick={handleBulkRemoveWatchlist}
+              disabled={selectedWatchlistCount === 0}
+            >
+              Remove from Watchlist
+            </button>
+            <button
+              type="button"
+              className={styles.bulkButtonGhost}
+              onClick={clearSelection}
+            >
+              Clear selection
+            </button>
+          </div>
+        </div>
+      )}
+
       {sortedItems.length === 0 ? (
         <div className={styles.empty}>
           <p>No items in your list</p>
@@ -414,6 +531,9 @@ export default function MyListPage() {
               item={item}
               onUpdate={handleUpdateItem}
               onRemove={handleRemoveItem}
+              selectable
+              selected={selectedIds.has(item.id)}
+              onSelectChange={(checked) => handleSelectChange(item.id, checked)}
             />
           ))}
         </div>

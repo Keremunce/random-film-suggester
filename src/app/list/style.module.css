@@ -355,8 +355,72 @@
   flex-wrap: wrap;
 }
 
+.bulkBar {
+  margin-bottom: 1.5rem;
+  padding: 0.9rem 1rem;
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.bulkCount {
+  margin: 0;
+  color: #e2e8f0;
+  font-weight: 600;
+}
+
+.bulkActions {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.bulkButton,
+.bulkButtonGhost {
+  border: none;
+  border-radius: 999px;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: #0b1d39;
+  background: #93c5fd;
+}
+
+.bulkButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.bulkButtonGhost {
+  background: rgba(255, 255, 255, 0.1);
+  color: #e2e8f0;
+}
+
 .filterGroup {
   display: flex;
+}
+
+.selectRow {
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.selectAllButton {
+  border: none;
+  border-radius: 999px;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.12);
+  color: #e2e8f0;
 }
 
 .segmentedFull {

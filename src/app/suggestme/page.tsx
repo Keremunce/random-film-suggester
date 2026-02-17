@@ -44,8 +44,8 @@ export default function SuggestMePage() {
 			{!suggestion && (
 				<div className={styles.empty}>
 					<p>No watched items yet.</p>
-					<Link href="/search" className={styles.link}>
-						Search movies & series
+					<Link href="/explore" className={styles.link}>
+						Explore movies & series
 					</Link>
 				</div>
 			)}

@@ -14,7 +14,9 @@ interface SearchResultProps {
   overview: string | null;
   voteAverage: number | null;
   onAdd: () => void;
+  onAddWatched?: () => void;
   isAdded?: boolean;
+  isWatched?: boolean;
 }
 
 const POSTER_BASE = "https://image.tmdb.org/t/p/w154";
@@ -27,7 +29,9 @@ export const SearchResult: React.FC<SearchResultProps> = ({
   overview,
   voteAverage,
   onAdd,
+  onAddWatched,
   isAdded = false,
+  isWatched = false,
 }) => {
   const posterUrl = posterPath
     ? `${POSTER_BASE}${posterPath}`
@@ -67,13 +71,24 @@ export const SearchResult: React.FC<SearchResultProps> = ({
         </p>
       </div>
 
-      <button
-        className={`${styles.addBtn} ${isAdded ? styles.added : ""}`}
-        onClick={onAdd}
-        disabled={isAdded}
-      >
-        {isAdded ? "✓ Added" : "+ Add"}
-      </button>
+      <div className={styles.actions}>
+        <button
+          className={`${styles.addBtn} ${isAdded ? styles.added : ""}`}
+          onClick={onAdd}
+          disabled={isAdded}
+        >
+          {isAdded ? "Saved" : "Watchlist"}
+        </button>
+        {onAddWatched && (
+          <button
+            className={`${styles.watchBtn} ${isWatched ? styles.added : ""}`}
+            onClick={onAddWatched}
+            disabled={isWatched}
+          >
+            {isWatched ? "Watched" : "I Watched"}
+          </button>
+        )}
+      </div>
     </div>
   );
 };

@@ -11,6 +11,9 @@ interface MediaCardProps {
   item: MediaItem;
   onUpdate: (item: MediaItem) => void;
   onRemove: (id: string) => void;
+  selectable?: boolean;
+  selected?: boolean;
+  onSelectChange?: (checked: boolean) => void;
 }
 
 const POSTER_BASE = "https://image.tmdb.org/t/p/w154";
@@ -19,6 +22,9 @@ export const MediaCard: React.FC<MediaCardProps> = ({
   item,
   onUpdate,
   onRemove,
+  selectable = false,
+  selected = false,
+  onSelectChange,
 }) => {
   const handleStatusToggle = () => {
     const newStatus = item.status === "watched" ? "watchlist" : "watched";
@@ -36,6 +42,17 @@ export const MediaCard: React.FC<MediaCardProps> = ({
   return (
     <div className={styles.card}>
       <div className={styles.poster}>
+        {selectable && (
+          <label className={styles.selectBox}>
+            <input
+              type="checkbox"
+              className={styles.selectInput}
+              checked={selected}
+              onChange={(e) => onSelectChange?.(e.target.checked)}
+              aria-label={`Select ${item.title}`}
+            />
+          </label>
+        )}
         <Image
           src={posterUrl}
           alt={item.title}

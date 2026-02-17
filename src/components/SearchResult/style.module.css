@@ -82,9 +82,16 @@
   border-radius: 3px;
 }
 
-.addBtn {
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
   flex-shrink: 0;
-  padding: 0.5rem 1rem;
+}
+
+.addBtn,
+.watchBtn {
+  padding: 0.5rem 0.9rem;
   border: none;
   border-radius: 6px;
   background: var(--color-secondary-500);
@@ -95,12 +102,19 @@
   white-space: nowrap;
 }
 
-.addBtn:hover:not(:disabled) {
+.watchBtn {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.addBtn:hover:not(:disabled),
+.watchBtn:hover:not(:disabled) {
   filter: brightness(1.05);
 }
 
 .addBtn:disabled,
-.addBtn.added {
+.watchBtn:disabled,
+.addBtn.added,
+.watchBtn.added {
   background: rgba(5, 206, 145, 0.2);
   color: #a6f2d8;
   cursor: not-allowed;
@@ -120,7 +134,13 @@
     font-size: 0.95rem;
   }
 
-  .addBtn {
+  .actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .addBtn,
+  .watchBtn {
     padding: 0.5rem 0.75rem;
     font-size: 0.875rem;
   }
