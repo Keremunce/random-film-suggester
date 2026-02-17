@@ -44,7 +44,7 @@ const POSTER_BASE = "https://image.tmdb.org/t/p/w342";
 const generateId = () =>
   `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
-export default function ExplorePage() {
+function ExplorePageContent() {
   const context = useContext(MovieContext);
   if (!context) throw new Error("MovieContext not found");
 
@@ -475,5 +475,13 @@ export default function ExplorePage() {
         )}
       </section>
     </div>
+  );
+}
+
+export default function ExplorePage() {
+  return (
+    <React.Suspense fallback={<div className={styles.loading}>Loading...</div>}>
+      <ExplorePageContent />
+    </React.Suspense>
   );
 }
