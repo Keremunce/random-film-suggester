@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 const BASE_URL = "https://api.themoviedb.org/3";
 
@@ -19,7 +19,7 @@ type NormalizedItem = {
   voteAverage: number | null;
 };
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     const apiKey = process.env.TMDB_API_KEY;
     if (!apiKey) {
@@ -29,8 +29,13 @@ export async function GET() {
       );
     }
 
+    const pageParam = request.nextUrl.searchParams.get("page");
+    const page = Number.isFinite(Number(pageParam)) && Number(pageParam) > 0
+      ? String(Math.floor(Number(pageParam)))
+      : "1";
+
     const res = await fetch(
-      `${BASE_URL}/movie/top_rated?api_key=${apiKey}&language=en-US&page=1`,
+      `${BASE_URL}/movie/top_rated?api_key=${apiKey}&language=en-US&page=${page}`,
       { cache: "no-store" }
     );
 
@@ -42,7 +47,7 @@ export async function GET() {
       );
     }
 
-    const data = (await res.json()) as { results?: TmdbMovie[] };
+    const data = (await res.json()) as { results?: TmdbMovie[]; total_pages?: number };
     const results: NormalizedItem[] = (data.results || []).map((item) => ({
       tmdbId: item.id,
       type: "movie",
@@ -52,7 +57,7 @@ export async function GET() {
       voteAverage: typeof item.vote_average === "number" ? item.vote_average : null,
     }));
 
-    return NextResponse.json({ results });
+    return NextResponse.json({ results, total_pages: data.total_pages });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
     return NextResponse.json(

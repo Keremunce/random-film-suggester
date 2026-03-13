@@ -29,32 +29,15 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const params = request.nextUrl.searchParams;
-    const withGenres = params.get("with_genres");
-    const releaseYear = params.get("primary_release_year");
-    const minVote = params.get("vote_average_gte");
-    const sortBy = params.get("sort_by") || "popularity.desc";
-    const pageParam = params.get("page");
+    const pageParam = request.nextUrl.searchParams.get("page");
     const page = Number.isFinite(Number(pageParam)) && Number(pageParam) > 0
       ? String(Math.floor(Number(pageParam)))
       : "1";
 
-    const query = new URLSearchParams({
-      api_key: apiKey,
-      language: "en-US",
-      sort_by: sortBy,
-      page,
-      include_adult: "false",
-      include_video: "false",
-    });
-
-    if (withGenres) query.set("with_genres", withGenres);
-    if (releaseYear) query.set("primary_release_year", releaseYear);
-    if (minVote) query.set("vote_average.gte", minVote);
-
-    const res = await fetch(`${BASE_URL}/discover/movie?${query.toString()}`, {
-      cache: "no-store",
-    });
+    const res = await fetch(
+      `${BASE_URL}/movie/upcoming?api_key=${apiKey}&language=en-US&page=${page}`,
+      { cache: "no-store" }
+    );
 
     if (!res.ok) {
       const errorText = await res.text();
@@ -78,7 +61,7 @@ export async function GET(request: NextRequest) {
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
     return NextResponse.json(
-      { error: `Failed to discover movies: ${message}` },
+      { error: `Failed to fetch upcoming: ${message}` },
       { status: 500 }
     );
   }

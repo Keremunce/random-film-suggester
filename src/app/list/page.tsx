@@ -293,18 +293,15 @@ export default function MyListPage() {
     all: state.items.length,
     watched: state.items.filter((i) => i.status === "watched").length,
     watchlist: state.items.filter((i) => i.status === "watchlist").length,
+    upcoming: filterUtils.filter(state.items, "upcoming", "all").length,
   };
 
-  const typeCounts = {
-    all: statusFilter === "all"
-      ? state.items
-      : state.items.filter((i) => i.status === statusFilter),
-  };
+  const itemsByStatus = filterUtils.filter(state.items, statusFilter, "all");
 
   const typeCountsByStatus = {
-    movies: typeCounts.all.filter((i) => i.type === "movie").length,
-    series: typeCounts.all.filter((i) => i.type === "tv").length,
-    all: typeCounts.all.length,
+    movies: itemsByStatus.filter((i) => i.type === "movie").length,
+    series: itemsByStatus.filter((i) => i.type === "tv").length,
+    all: itemsByStatus.length,
   };
 
   return (
@@ -433,6 +430,7 @@ export default function MyListPage() {
               { value: "all", label: `All (${counts.all})` },
               { value: "watched", label: `Watched (${counts.watched})` },
               { value: "watchlist", label: `Watchlist (${counts.watchlist})` },
+              { value: "upcoming", label: `Upcoming (${counts.upcoming})` },
             ]}
           />
         </div>

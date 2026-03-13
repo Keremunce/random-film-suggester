@@ -465,7 +465,7 @@ function ExplorePageContent() {
                       onClick={() => handleAddWatched(item)}
                       disabled={isWatched}
                     >
-                      {isWatched ? "Watched" : "I Watched"}
+                      {isWatched ? "Watched" : "Watched"}
                     </button>
                   </div>
                 </div>

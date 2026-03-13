@@ -4,6 +4,7 @@ import React, { useContext, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { MovieContext } from "@/app/context/MovieContext";
+import { Button } from "@/components/ui/button";
 import styles from "./page.module.css";
 
 type MediaItem = {
@@ -47,6 +48,14 @@ export default function HomePage() {
   const [topRatedLoading, setTopRatedLoading] = useState(true);
   const [topRatedError, setTopRatedError] = useState<string | null>(null);
 
+  const [moviesThisYear, setMoviesThisYear] = useState<MediaItem[]>([]);
+  const [moviesThisYearLoading, setMoviesThisYearLoading] = useState(true);
+  const [moviesThisYearError, setMoviesThisYearError] = useState<string | null>(null);
+
+  const [upcomingMovies, setUpcomingMovies] = useState<MediaItem[]>([]);
+  const [upcomingMoviesLoading, setUpcomingMoviesLoading] = useState(true);
+  const [upcomingMoviesError, setUpcomingMoviesError] = useState<string | null>(null);
+
   const [tasteRecommendations, setTasteRecommendations] = useState<MediaItem[]>([]);
   const [tasteGenres, setTasteGenres] = useState<GenreCount[]>([]);
   const [tasteLoading, setTasteLoading] = useState(false);
@@ -62,6 +71,7 @@ export default function HomePage() {
 
   useEffect(() => {
     let isMounted = true;
+    const currentYear = new Date().getFullYear();
 
     const loadTrending = async () => {
       try {
@@ -99,6 +109,42 @@ export default function HomePage() {
       }
     };
 
+    const loadMoviesThisYear = async () => {
+      try {
+        setMoviesThisYearLoading(true);
+        setMoviesThisYearError(null);
+        const res = await fetch(`/api/discover?primary_release_year=${currentYear}`);
+        if (!res.ok) throw new Error("Failed to load movies this year");
+        const data = await res.json();
+        if (!isMounted) return;
+        setMoviesThisYear(data.results || []);
+      } catch {
+        if (!isMounted) return;
+        setMoviesThisYearError("Failed to load movies this year.");
+      } finally {
+        if (!isMounted) return;
+        setMoviesThisYearLoading(false);
+      }
+    };
+
+    const loadUpcomingMovies = async () => {
+      try {
+        setUpcomingMoviesLoading(true);
+        setUpcomingMoviesError(null);
+        const res = await fetch("/api/upcoming");
+        if (!res.ok) throw new Error("Failed to load upcoming movies");
+        const data = await res.json();
+        if (!isMounted) return;
+        setUpcomingMovies(data.results || []);
+      } catch {
+        if (!isMounted) return;
+        setUpcomingMoviesError("Failed to load upcoming movies.");
+      } finally {
+        if (!isMounted) return;
+        setUpcomingMoviesLoading(false);
+      }
+    };
+
     const loadTopRated = async () => {
       try {
         setTopRatedLoading(true);
@@ -119,6 +165,8 @@ export default function HomePage() {
 
     loadTrending();
     loadNewReleases();
+    loadMoviesThisYear();
+    loadUpcomingMovies();
     loadTopRated();
 
     return () => {
@@ -312,6 +360,40 @@ export default function HomePage() {
 
       <section className={styles.section}>
         <div className={styles.sectionHeader}>
+          <h2>Movies This Year</h2>
+          <p>Fresh releases from this year</p>
+        </div>
+        {moviesThisYearError && <div className={styles.error}>{moviesThisYearError}</div>}
+        {moviesThisYearLoading && <div className={styles.loading}>Loading...</div>}
+        {!moviesThisYearLoading && (
+          <div className={styles.grid}>{moviesThisYear.slice(0, 12).map(renderCard)}</div>
+        )}
+        <div className={styles.seeMoreRow}>
+          <Button variant="outline" asChild>
+            <Link href="/movies/this-year">See More</Link>
+          </Button>
+        </div>
+      </section>
+
+      <section className={styles.section}>
+        <div className={styles.sectionHeader}>
+          <h2>Upcoming Movies</h2>
+          <p>Movies arriving soon</p>
+        </div>
+        {upcomingMoviesError && <div className={styles.error}>{upcomingMoviesError}</div>}
+        {upcomingMoviesLoading && <div className={styles.loading}>Loading...</div>}
+        {!upcomingMoviesLoading && (
+          <div className={styles.grid}>{upcomingMovies.slice(0, 12).map(renderCard)}</div>
+        )}
+        <div className={styles.seeMoreRow}>
+          <Button variant="outline" asChild>
+            <Link href="/movies/upcoming">See More</Link>
+          </Button>
+        </div>
+      </section>
+
+      <section className={styles.section}>
+        <div className={styles.sectionHeader}>
           <h2>Top Rated Movies</h2>
           <p>The crowd favorites</p>
         </div>
@@ -320,6 +402,11 @@ export default function HomePage() {
         {!topRatedLoading && (
           <div className={styles.grid}>{topRated.slice(0, 12).map(renderCard)}</div>
         )}
+        <div className={styles.seeMoreRow}>
+          <Button variant="outline" asChild>
+            <Link href="/movies/top-rated">See More</Link>
+          </Button>
+        </div>
       </section>
 
       <section className={styles.section}>

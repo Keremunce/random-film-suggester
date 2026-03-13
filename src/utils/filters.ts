@@ -1,6 +1,7 @@
 import { MediaItem } from "@/app/context/MovieContext";
+import { isUpcomingMovie } from "@/utils/dateFilters";
 
-export type StatusFilter = "all" | "watched" | "watchlist";
+export type StatusFilter = "all" | "watched" | "watchlist" | "upcoming";
 export type TypeFilter = "all" | "movie" | "tv";
 
 export const filterUtils = {
@@ -14,7 +15,11 @@ export const filterUtils = {
   ): MediaItem[] => {
     return items.filter((item) => {
       const statusMatch =
-        statusFilter === "all" || item.status === statusFilter;
+        statusFilter === "all"
+          ? true
+          : statusFilter === "upcoming"
+            ? isUpcomingMovie(item.releaseDate)
+            : item.status === statusFilter;
       const typeMatch =
         typeFilter === "all" || item.type === typeFilter;
       return statusMatch && typeMatch;

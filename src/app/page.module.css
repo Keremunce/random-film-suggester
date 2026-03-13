@@ -53,6 +53,11 @@
   gap: 1.25rem;
 }
 
+.seeMoreRow {
+  display: flex;
+  justify-content: center;
+}
+
 .sectionHeader h2 {
   margin: 0;
   color: #ffffff;
@@ -115,6 +120,9 @@
   font-size: 0.95rem;
   font-weight: 600;
   color: #ffffff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .cardMeta {
@@ -175,5 +183,11 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+  }
+}
+
+@media (min-width: 1100px) {
+  .grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 }

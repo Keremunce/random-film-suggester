@@ -91,7 +91,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({
             ) : (
               <>
                 <FiEye aria-hidden="true" />
-                I Watched
+                Watched
               </>
             )}
           </button>

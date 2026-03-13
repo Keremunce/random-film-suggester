@@ -85,7 +85,7 @@ export const SearchResult: React.FC<SearchResultProps> = ({
             onClick={onAddWatched}
             disabled={isWatched}
           >
-            {isWatched ? "Watched" : "I Watched"}
+            {isWatched ? "Watched" : "Watched"}
           </button>
         )}
       </div>
