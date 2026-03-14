@@ -29,6 +29,20 @@
   object-fit: cover;
 }
 
+.detailTrigger {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  padding: 0;
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
+}
+
 .info {
   flex: 1;
   min-width: 0;
@@ -91,6 +105,8 @@
 
 .addBtn,
 .watchBtn {
+  display: inline-flex;
+  align-items: center;
   padding: 0.5rem 0.9rem;
   border: none;
   border-radius: 6px;

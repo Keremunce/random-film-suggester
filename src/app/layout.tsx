@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { MovieProvider } from "./context/MovieContext";
 import { Navigation } from "@/components/Navigation";
+import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
 	title: "Media Tracker",
@@ -36,6 +37,7 @@ export default function RootLayout({
 				<MovieProvider>
 					<Navigation />
 					{children}
+					<Toaster />
 				</MovieProvider>
 			</body>
 		</html>

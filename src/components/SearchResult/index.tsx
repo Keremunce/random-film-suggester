@@ -3,6 +3,8 @@
 import React from "react";
 import Image from "next/image";
 import { StarRating } from "@/components/StarRating";
+import { Button } from "@/components/ui/button";
+import { BookmarkPlus, CheckCircle } from "lucide-react";
 import styles from "./style.module.css";
 
 interface SearchResultProps {
@@ -15,6 +17,8 @@ interface SearchResultProps {
   voteAverage: number | null;
   onAdd: () => void;
   onAddWatched?: () => void;
+  onOpenDetail?: () => void;
+  isPressed?: boolean;
   isAdded?: boolean;
   isWatched?: boolean;
 }
@@ -30,6 +34,8 @@ export const SearchResult: React.FC<SearchResultProps> = ({
   voteAverage,
   onAdd,
   onAddWatched,
+  onOpenDetail,
+  isPressed = false,
   isAdded = false,
   isWatched = false,
 }) => {
@@ -46,47 +52,61 @@ export const SearchResult: React.FC<SearchResultProps> = ({
       : null;
 
   return (
-    <div className={styles.result}>
-      <div className={styles.poster}>
-        <Image
-          src={posterUrl}
-          alt={title}
-          width={100}
-          height={150}
-          className={styles.posterImage}
-        />
-      </div>
-
-      <div className={styles.info}>
-        <div className={styles.titleRow}>
-          <h4 className={styles.title}>{title}</h4>
-          <div className={styles.rating}>
-            <StarRating value={starValue} onChange={() => {}} size="sm" interactive={false} />
-          </div>
+    <div
+      className={`${styles.result} transition-transform duration-150 ${
+        isPressed ? "scale-95" : ""
+      }`}
+    >
+      <button
+        type="button"
+        className={styles.detailTrigger}
+        onClick={onOpenDetail}
+      >
+        <div className={styles.poster}>
+          <Image
+            src={posterUrl}
+            alt={title}
+            width={100}
+            height={150}
+            className={styles.posterImage}
+          />
         </div>
-        {overview && <p className={styles.description}>{overview}</p>}
-        <p className={styles.meta}>
-          <span className={styles.badge}>{type === "movie" ? "🎬 Movie" : "📺 Series"}</span>
-          <span className={styles.year}>{year}</span>
-        </p>
-      </div>
+
+        <div className={styles.info}>
+          <div className={styles.titleRow}>
+            <h4 className={styles.title}>{title}</h4>
+            <div className={styles.rating}>
+              <StarRating value={starValue} onChange={() => {}} size="sm" interactive={false} />
+            </div>
+          </div>
+          {overview && <p className={styles.description}>{overview}</p>}
+          <p className={styles.meta}>
+            <span className={styles.badge}>{type === "movie" ? "🎬 Movie" : "📺 Series"}</span>
+            <span className={styles.year}>{year}</span>
+          </p>
+        </div>
+      </button>
 
       <div className={styles.actions}>
-        <button
+        <Button
+          unstyled
           className={`${styles.addBtn} ${isAdded ? styles.added : ""}`}
           onClick={onAdd}
           disabled={isAdded}
         >
+          <BookmarkPlus className="mr-2 h-4 w-4" />
           {isAdded ? "Saved" : "Watchlist"}
-        </button>
+        </Button>
         {onAddWatched && (
-          <button
+          <Button
+            unstyled
             className={`${styles.watchBtn} ${isWatched ? styles.added : ""}`}
             onClick={onAddWatched}
             disabled={isWatched}
           >
+            <CheckCircle className="mr-2 h-4 w-4" />
             {isWatched ? "Watched" : "Watched"}
-          </button>
+          </Button>
         )}
       </div>
     </div>

@@ -5,6 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { MovieContext } from "@/app/context/MovieContext";
+import { Button } from "@/components/ui/button";
+import { BookmarkPlus, CheckCircle, Trash } from "lucide-react";
 import { StarRating } from "@/components/StarRating";
 import styles from "./style.module.css";
 
@@ -168,24 +170,44 @@ export default function MovieDetailPage() {
               </p>
             </div>
             <div className={styles.actions}>
-              <button
+              <Button
                 type="button"
-                className={`${styles.actionButton} ${
-                  isWatchlist ? styles.active : ""
-                }`}
+                unstyled
+                className={`${styles.actionButton} ${isWatchlist ? styles.active : ""}`}
                 onClick={() => handleAdd("watchlist")}
               >
-                {isWatchlist ? "Remove from Watchlist" : "Save to Watchlist"}
-              </button>
-              <button
+                {isWatchlist ? (
+                  <>
+                    <Trash className="mr-2 h-4 w-4" />
+                    Remove from Watchlist
+                  </>
+                ) : (
+                  <>
+                    <BookmarkPlus className="mr-2 h-4 w-4" />
+                    Save to Watchlist
+                  </>
+                )}
+              </Button>
+              <Button
                 type="button"
+                unstyled
                 className={`${styles.actionButton} ${styles.secondary} ${
                   isWatched ? styles.active : ""
                 }`}
                 onClick={() => handleAdd("watched")}
               >
-                {isWatched ? "Remove from Watched" : "Mark as Watched"}
-              </button>
+                {isWatched ? (
+                  <>
+                    <Trash className="mr-2 h-4 w-4" />
+                    Remove from Watched
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle className="mr-2 h-4 w-4" />
+                    Mark as Watched
+                  </>
+                )}
+              </Button>
             </div>
           </div>
 

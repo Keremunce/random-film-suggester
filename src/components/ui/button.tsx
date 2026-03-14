@@ -9,15 +9,14 @@ const cn = (...classes: Array<string | undefined | false>) =>
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: ButtonVariant;
   asChild?: boolean;
+  unstyled?: boolean;
 };
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = "default", asChild = false, children, ...props }, ref) => {
-    const composedClassName = cn(
-      styles.button,
-      variant === "outline" && styles.outline,
-      className
-    );
+  ({ className, variant = "default", asChild = false, unstyled = false, children, ...props }, ref) => {
+    const composedClassName = unstyled
+      ? className
+      : cn(styles.button, variant === "outline" && styles.outline, className);
 
     if (asChild && React.isValidElement(children)) {
       const child = children as React.ReactElement<{

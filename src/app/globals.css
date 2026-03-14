@@ -122,6 +122,20 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.sonner-mobile {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .sonner-desktop {
+    display: none;
+  }
+
+  .sonner-mobile {
+    display: block;
+  }
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;

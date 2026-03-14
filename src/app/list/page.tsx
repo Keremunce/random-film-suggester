@@ -5,7 +5,15 @@ import Image from "next/image";
 import { MediaCard } from "@/components/MediaCard";
 import { MovieContext, MediaItem } from "@/app/context/MovieContext";
 import { filterUtils, StatusFilter, TypeFilter } from "@/utils/filters";
+import {
+  sortByOldestAdded,
+  sortByRecentlyAdded,
+  sortByReleaseNewest,
+  sortByReleaseOldest,
+} from "@/utils/sortMovies";
 import { SegmentedControl } from "@/components/SegmentedControl";
+import { Select, SelectContent, SelectItem, SelectLabel } from "@/components/ui/select";
+import { MovieDetailSheet } from "@/components/MovieDetailSheet";
 import styles from "./style.module.css";
 
 const SUGGESTION_STORAGE_KEY = "myList:suggestedMovie";
@@ -27,8 +35,8 @@ export default function MyListPage() {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [typeFilter, setTypeFilter] = useState<TypeFilter>("all");
   const [sortBy, setSortBy] = useState<
-    "title-asc" | "title-desc" | "rating-desc" | "rating-asc"
-  >("title-asc");
+    "recent" | "oldest" | "release-newest" | "release-oldest"
+  >("recent");
   const [suggestedItem, setSuggestedItem] = useState<MediaItem | null>(null);
   const [suggestionNote, setSuggestionNote] = useState<string | null>(null);
   const [confettiActive, setConfettiActive] = useState(false);
@@ -36,6 +44,7 @@ export default function MyListPage() {
   const [suggestedAt, setSuggestedAt] = useState<number | null>(null);
   const [diceAnimating, setDiceAnimating] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [selectedItem, setSelectedItem] = useState<MediaItem | null>(null);
   const confettiTimerRef = useRef<NodeJS.Timeout | null>(null);
   const diceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -51,25 +60,19 @@ export default function MyListPage() {
       )
     : filteredItems;
 
-  const sortedItems = [...searchedItems].sort((a, b) => {
+  const sortedItems = (() => {
     switch (sortBy) {
-      case "title-desc":
-        return b.title.localeCompare(a.title, undefined, { sensitivity: "base" });
-      case "rating-desc": {
-        const aRating = a.rating ?? -1;
-        const bRating = b.rating ?? -1;
-        return bRating - aRating;
-      }
-      case "rating-asc": {
-        const aRating = a.rating ?? -1;
-        const bRating = b.rating ?? -1;
-        return aRating - bRating;
-      }
-      case "title-asc":
+      case "oldest":
+        return sortByOldestAdded(searchedItems);
+      case "release-newest":
+        return sortByReleaseNewest(searchedItems);
+      case "release-oldest":
+        return sortByReleaseOldest(searchedItems);
+      case "recent":
       default:
-        return a.title.localeCompare(b.title, undefined, { sensitivity: "base" });
+        return sortByRecentlyAdded(searchedItems);
     }
-  });
+  })();
 
   const handleUpdateItem = (item: MediaItem) => {
     dispatch({ type: "UPDATE_ITEM", payload: item });
@@ -451,19 +454,22 @@ export default function MyListPage() {
         </div>
 
         <div className={styles.filterGroup}>
-          <SegmentedControl
-            ariaLabel="Sort list"
+          <Select
             value={sortBy}
-            onChange={setSortBy}
-            className={styles.segmentedFull}
-            stretch
-            options={[
-              { value: "title-asc", label: "A → Z" },
-              { value: "title-desc", label: "Z → A" },
-              { value: "rating-desc", label: "⭐ High" },
-              { value: "rating-asc", label: "⭐ Low" },
-            ]}
-          />
+            onValueChange={(value) =>
+              setSortBy(value as "recent" | "oldest" | "release-newest" | "release-oldest")
+            }
+          >
+            <SelectLabel>
+              Sort list
+              <SelectContent>
+                <SelectItem value="recent">Recently Added</SelectItem>
+                <SelectItem value="oldest">Oldest Added</SelectItem>
+                <SelectItem value="release-newest">Release Date (Newest)</SelectItem>
+                <SelectItem value="release-oldest">Release Date (Oldest)</SelectItem>
+              </SelectContent>
+            </SelectLabel>
+          </Select>
         </div>
       </div>
 
@@ -532,6 +538,7 @@ export default function MyListPage() {
               selectable
               selected={selectedIds.has(item.id)}
               onSelectChange={(checked) => handleSelectChange(item.id, checked)}
+              onOpenDetail={setSelectedItem}
             />
           ))}
         </div>
@@ -570,6 +577,12 @@ export default function MyListPage() {
           ))}
         </div>
       </div>
+
+      <MovieDetailSheet
+        movie={selectedItem}
+        open={Boolean(selectedItem)}
+        onClose={() => setSelectedItem(null)}
+      />
     </div>
   );
 }

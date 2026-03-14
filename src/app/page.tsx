@@ -5,6 +5,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { MovieContext } from "@/app/context/MovieContext";
 import { Button } from "@/components/ui/button";
+import { MovieDetailSheet } from "@/components/MovieDetailSheet";
+import { showToast } from "@/utils/showToast";
+import { BookmarkPlus } from "lucide-react";
 import styles from "./page.module.css";
 
 type MediaItem = {
@@ -60,6 +63,8 @@ export default function HomePage() {
   const [tasteGenres, setTasteGenres] = useState<GenreCount[]>([]);
   const [tasteLoading, setTasteLoading] = useState(false);
   const [tasteError, setTasteError] = useState<string | null>(null);
+  const [selectedItem, setSelectedItem] = useState<MediaItem | null>(null);
+  const [pressedId, setPressedId] = useState<number | null>(null);
 
   const watchlistMovieIds = useMemo(
     () =>
@@ -262,6 +267,7 @@ export default function HomePage() {
         addedAt: new Date().toISOString(),
       },
     });
+    showToast("Added to Watchlist");
   };
 
   const renderCard = (item: MediaItem) => {
@@ -292,25 +298,36 @@ export default function HomePage() {
       </>
     );
 
+    const isPressed = pressedId === item.tmdbId;
     return (
-      <div key={`${item.type}-${item.tmdbId}`} className={styles.card}>
-        {item.type === "movie" ? (
-          <Link href={`/movie/${item.tmdbId}`} className={styles.cardLink}>
-            {content}
-          </Link>
-        ) : (
-          <div className={styles.cardLink} aria-label={`${item.title} is a series`}>
-            {content}
-          </div>
-        )}
+      <div
+        key={`${item.type}-${item.tmdbId}`}
+        className={`${styles.card} transition-transform duration-150 ${
+          isPressed ? "scale-95" : ""
+        }`}
+      >
+        <button
+          type="button"
+          className={styles.cardLink}
+          onClick={() => setSelectedItem(item)}
+          aria-label={`Open details for ${item.title}`}
+        >
+          {content}
+        </button>
         <div className={styles.cardActions}>
-          <button
+          <Button
             type="button"
+            unstyled
             className={`${styles.saveButton} ${isSaved ? styles.saved : ""}`}
-            onClick={() => handleSave(item)}
+            onClick={() => {
+              setPressedId(item.tmdbId);
+              window.setTimeout(() => setPressedId(null), 120);
+              handleSave(item);
+            }}
           >
+            <BookmarkPlus className="mr-2 h-4 w-4" />
             {isSaved ? "Saved" : "Watchlist"}
-          </button>
+          </Button>
           <span className={styles.typeBadge}>
             {item.type === "movie" ? "Movie" : "Series"}
           </span>
@@ -437,6 +454,12 @@ export default function HomePage() {
           </>
         )}
       </section>
+
+      <MovieDetailSheet
+        movie={selectedItem}
+        open={Boolean(selectedItem)}
+        onClose={() => setSelectedItem(null)}
+      />
     </div>
   );
 }

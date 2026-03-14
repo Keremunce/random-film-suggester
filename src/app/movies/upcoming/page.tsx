@@ -6,6 +6,9 @@ import Link from "next/link";
 import { MovieContext } from "@/app/context/MovieContext";
 import styles from "../shared.module.css";
 import homeStyles from "@/app/page.module.css";
+import { showToast } from "@/utils/showToast";
+import { Button } from "@/components/ui/button";
+import { BookmarkPlus } from "lucide-react";
 
 type ApiItem = {
   tmdbId: number;
@@ -39,6 +42,7 @@ export default function UpcomingMoviesPage() {
   const [totalPages, setTotalPages] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [pressedId, setPressedId] = useState<number | null>(null);
 
   const hasMore = totalPages === null ? true : page < totalPages;
 
@@ -101,6 +105,7 @@ export default function UpcomingMoviesPage() {
         addedAt: new Date().toISOString(),
       },
     });
+    showToast("Added to Watchlist");
   };
 
   const renderCard = (item: ApiItem) => {
@@ -110,8 +115,14 @@ export default function UpcomingMoviesPage() {
       ? `${POSTER_BASE}${item.posterPath}`
       : "https://via.placeholder.com/342x513?text=No+Poster";
 
+    const isPressed = pressedId === item.tmdbId;
     return (
-      <div key={`movie-${item.tmdbId}`} className={homeStyles.card}>
+      <div
+        key={`movie-${item.tmdbId}`}
+        className={`${homeStyles.card} transition-transform duration-150 ${
+          isPressed ? "scale-95" : ""
+        }`}
+      >
         <Link href={`/movie/${item.tmdbId}`} className={homeStyles.cardLink}>
           <div className={homeStyles.cardPoster}>
             <Image
@@ -130,13 +141,19 @@ export default function UpcomingMoviesPage() {
           </div>
         </Link>
         <div className={homeStyles.cardActions}>
-          <button
+          <Button
             type="button"
+            unstyled
             className={`${homeStyles.saveButton} ${isSaved ? homeStyles.saved : ""}`}
-            onClick={() => handleSave(item)}
+            onClick={() => {
+              setPressedId(item.tmdbId);
+              window.setTimeout(() => setPressedId(null), 120);
+              handleSave(item);
+            }}
           >
+            <BookmarkPlus className="mr-2 h-4 w-4" />
             {isSaved ? "Saved" : "Watchlist"}
-          </button>
+          </Button>
           <span className={homeStyles.typeBadge}>Movie</span>
         </div>
       </div>

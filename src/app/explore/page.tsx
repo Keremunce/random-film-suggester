@@ -10,9 +10,13 @@ import React, {
 } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { MovieContext } from "@/app/context/MovieContext";
 import { SearchResult } from "@/components/SearchResult";
+import { MovieDetailSheet } from "@/components/MovieDetailSheet";
+import { showToast } from "@/utils/showToast";
+import { Button } from "@/components/ui/button";
+import { BookmarkPlus, CheckCircle } from "lucide-react";
 import styles from "./style.module.css";
 
 type Genre = {
@@ -49,6 +53,7 @@ function ExplorePageContent() {
   if (!context) throw new Error("MovieContext not found");
 
   const { state, dispatch } = context;
+  const router = useRouter();
   const searchParams = useSearchParams();
 
   const [genres, setGenres] = useState<Genre[]>([]);
@@ -64,6 +69,9 @@ function ExplorePageContent() {
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
   const searchDebounceRef = useRef<NodeJS.Timeout | null>(null);
+  const lastQueryRef = useRef<string | null>(null);
+  const [selectedItem, setSelectedItem] = useState<SearchResultData | null>(null);
+  const [pressedId, setPressedId] = useState<number | null>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -144,9 +152,10 @@ function ExplorePageContent() {
     const existing = getExistingItem(item.tmdbId);
     if (existing) {
       if (existing.status === "watchlist") {
-        dispatch({ type: "REMOVE_ITEM", payload: { id: existing.id } });
+        showToast("Already in your list", "warning");
       } else {
         dispatch({ type: "UPDATE_ITEM", payload: { ...existing, status: "watchlist" } });
+        showToast("Added to Watchlist");
       }
       return;
     }
@@ -165,13 +174,18 @@ function ExplorePageContent() {
         addedAt: new Date().toISOString(),
       },
     });
+    showToast("Added to Watchlist");
   };
 
   const handleAddWatched = (item: MovieItem) => {
     const existing = getExistingItem(item.tmdbId);
     if (existing) {
-      if (existing.status === "watched") return;
+      if (existing.status === "watched") {
+        showToast("Already in your list", "warning");
+        return;
+      }
       dispatch({ type: "UPDATE_ITEM", payload: { ...existing, status: "watched" } });
+      showToast("Marked as Watched");
       return;
     }
 
@@ -189,6 +203,7 @@ function ExplorePageContent() {
         addedAt: new Date().toISOString(),
       },
     });
+    showToast("Marked as Watched");
   };
 
   const performSearch = useCallback(async (query: string) => {
@@ -216,6 +231,12 @@ function ExplorePageContent() {
 
   const handleSearchInputChange = (value: string) => {
     setSearchQuery(value);
+    lastQueryRef.current = value;
+    const trimmed = value.trim();
+    const nextUrl = trimmed
+      ? `/explore?q=${encodeURIComponent(trimmed)}`
+      : "/explore";
+    router.replace(nextUrl, { scroll: false });
     if (searchDebounceRef.current) clearTimeout(searchDebounceRef.current);
     searchDebounceRef.current = setTimeout(() => {
       performSearch(value);
@@ -224,6 +245,8 @@ function ExplorePageContent() {
 
   useEffect(() => {
     const q = searchParams.get("q") || "";
+    if (lastQueryRef.current === q) return;
+    lastQueryRef.current = q;
     setSearchQuery(q);
     if (q.trim()) {
       performSearch(q);
@@ -294,6 +317,8 @@ function ExplorePageContent() {
                   overview={item.overview}
                   voteAverage={item.voteAverage}
                   onAdd={() => {
+                    setPressedId(item.tmdbId);
+                    window.setTimeout(() => setPressedId(null), 120);
                     if (!existing) {
                       dispatch({
                         type: "ADD_ITEM",
@@ -309,16 +334,22 @@ function ExplorePageContent() {
                           addedAt: new Date().toISOString(),
                         },
                       });
+                      showToast("Added to Watchlist");
                       return;
                     }
-                    if (existing.status !== "watchlist") {
-                      dispatch({
-                        type: "UPDATE_ITEM",
-                        payload: { ...existing, status: "watchlist" },
-                      });
+                    if (existing.status === "watchlist") {
+                      showToast("Already in your list", "warning");
+                      return;
                     }
+                    dispatch({
+                      type: "UPDATE_ITEM",
+                      payload: { ...existing, status: "watchlist" },
+                    });
+                    showToast("Added to Watchlist");
                   }}
                   onAddWatched={() => {
+                    setPressedId(item.tmdbId);
+                    window.setTimeout(() => setPressedId(null), 120);
                     if (!existing) {
                       dispatch({
                         type: "ADD_ITEM",
@@ -334,17 +365,23 @@ function ExplorePageContent() {
                           addedAt: new Date().toISOString(),
                         },
                       });
+                      showToast("Marked as Watched");
                       return;
                     }
-                    if (existing.status !== "watched") {
-                      dispatch({
-                        type: "UPDATE_ITEM",
-                        payload: { ...existing, status: "watched" },
-                      });
+                    if (existing.status === "watched") {
+                      showToast("Already in your list", "warning");
+                      return;
                     }
+                    dispatch({
+                      type: "UPDATE_ITEM",
+                      payload: { ...existing, status: "watched" },
+                    });
+                    showToast("Marked as Watched");
                   }}
                   isAdded={isInWatchlist}
                   isWatched={isWatched}
+                  onOpenDetail={() => setSelectedItem(item)}
+                  isPressed={pressedId === item.tmdbId}
                 />
               );
             })}
@@ -432,7 +469,12 @@ function ExplorePageContent() {
                 : "https://via.placeholder.com/342x513?text=No+Poster";
 
               return (
-                <div key={item.tmdbId} className={styles.card}>
+                <div
+                  key={item.tmdbId}
+                  className={`${styles.card} transition-transform duration-150 ${
+                    pressedId === item.tmdbId ? "scale-95" : ""
+                  }`}
+                >
                   <Link href={`/movie/${item.tmdbId}`} className={styles.cardLink}>
                     <div className={styles.cardPoster}>
                       <Image
@@ -452,21 +494,33 @@ function ExplorePageContent() {
                     </div>
                   </Link>
                   <div className={styles.cardActions}>
-                    <button
+                    <Button
                       type="button"
+                      unstyled
                       className={`${styles.saveButton} ${isSaved ? styles.saved : ""}`}
-                      onClick={() => handleAddWatchlist(item)}
+                      onClick={() => {
+                        setPressedId(item.tmdbId);
+                        window.setTimeout(() => setPressedId(null), 120);
+                        handleAddWatchlist(item);
+                      }}
                     >
+                      <BookmarkPlus className="mr-2 h-4 w-4" />
                       {isSaved ? "Saved" : "Watchlist"}
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                       type="button"
+                      unstyled
                       className={`${styles.watchedButton} ${isWatched ? styles.watchedActive : ""}`}
-                      onClick={() => handleAddWatched(item)}
+                      onClick={() => {
+                        setPressedId(item.tmdbId);
+                        window.setTimeout(() => setPressedId(null), 120);
+                        handleAddWatched(item);
+                      }}
                       disabled={isWatched}
                     >
+                      <CheckCircle className="mr-2 h-4 w-4" />
                       {isWatched ? "Watched" : "Watched"}
-                    </button>
+                    </Button>
                   </div>
                 </div>
               );
@@ -474,6 +528,12 @@ function ExplorePageContent() {
           </div>
         )}
       </section>
+
+      <MovieDetailSheet
+        movie={selectedItem}
+        open={Boolean(selectedItem)}
+        onClose={() => setSelectedItem(null)}
+      />
     </div>
   );
 }

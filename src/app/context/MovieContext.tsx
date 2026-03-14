@@ -66,7 +66,11 @@ const MovieProvider = ({ children }: { children: ReactNode }) => {
 			const raw = localStorage.getItem(STORAGE_KEY);
 			if (raw) {
 				const parsed = JSON.parse(raw) as MediaItem[];
-				dispatch({ type: "SET_ITEMS", payload: parsed });
+				const normalized = parsed.map((item) => ({
+					...item,
+					addedAt: item.addedAt ?? new Date().toISOString(),
+				}));
+				dispatch({ type: "SET_ITEMS", payload: normalized });
 			}
 		} catch (err) {
 			// ignore parse errors
