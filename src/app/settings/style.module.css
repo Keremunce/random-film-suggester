@@ -162,9 +162,14 @@
 }
 
 .icon {
-  font-size: 2rem;
+  font-size: 1.4rem;
   margin-bottom: 0.5rem;
   color: #7b6ef7;
+}
+
+.icon svg {
+  width: 1em;
+  height: 1em;
 }
 
 .text {

@@ -139,6 +139,11 @@
   gap: 0.4rem;
 }
 
+.statusBtn svg {
+  width: 1em;
+  height: 1em;
+}
+
 .statusBtn:hover {
   background-color: rgba(18, 24, 41, 1);
 }
@@ -173,6 +178,11 @@
   cursor: pointer;
   font-size: 1rem;
   transition: all 0.2s ease;
+}
+
+.removeBtn svg {
+  width: 1em;
+  height: 1em;
 }
 
 .removeBtn:hover {
