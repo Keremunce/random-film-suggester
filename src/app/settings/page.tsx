@@ -2,7 +2,7 @@
 
 import React, { useContext, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { FiFilm, FiTv, FiUploadCloud } from "react-icons/fi";
+import { Film, Tv, UploadCloud } from "lucide-react";
 import { MovieContext } from "@/app/context/MovieContext";
 import { StatusModal } from "@/components/StatusModal";
 import { exportUtils } from "@/utils/export";
@@ -166,14 +166,14 @@ export default function SettingsPage() {
                 onClick={() => handleExport("json", "movies")}
                 className={`${styles.btn} ${styles.btnSecondary}`}
               >
-                <FiFilm aria-hidden="true" />
+                <Film aria-hidden="true" />
                 Movies Only
               </button>
               <button
                 onClick={() => handleExport("json", "series")}
                 className={`${styles.btn} ${styles.btnSecondary}`}
               >
-                <FiTv aria-hidden="true" />
+                <Tv aria-hidden="true" />
                 Series Only
               </button>
             </div>
@@ -193,14 +193,14 @@ export default function SettingsPage() {
                 onClick={() => handleExport("csv", "movies")}
                 className={`${styles.btn} ${styles.btnSecondary}`}
               >
-                <FiFilm aria-hidden="true" />
+                <Film aria-hidden="true" />
                 Movies Only
               </button>
               <button
                 onClick={() => handleExport("csv", "series")}
                 className={`${styles.btn} ${styles.btnSecondary}`}
               >
-                <FiTv aria-hidden="true" />
+                <Tv aria-hidden="true" />
                 Series Only
               </button>
             </div>
@@ -224,7 +224,7 @@ export default function SettingsPage() {
           />
           <label htmlFor="file-input" className={styles.uploadLabel}>
             <span className={styles.icon} aria-hidden="true">
-              <FiUploadCloud />
+              <UploadCloud />
             </span>
             <span className={styles.text}>
               Click to select JSON file or drag and drop

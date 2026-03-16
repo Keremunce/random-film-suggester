@@ -5,8 +5,8 @@ import Image from "next/image";
 import { MediaItem } from "@/app/context/MovieContext";
 import { StarRating } from "@/components/StarRating";
 import { Button } from "@/components/ui/button";
-import { FiEye, FiEyeOff } from "react-icons/fi";
 import { Trash } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import styles from "./style.module.css";
 
 interface MediaCardProps {
@@ -45,10 +45,17 @@ export const MediaCard: React.FC<MediaCardProps> = ({
 
   return (
     <div className={styles.card}>
-      <button
-        type="button"
+      <div
+        role="button"
+        tabIndex={0}
         className={styles.openButton}
         onClick={() => onOpenDetail?.(item)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            onOpenDetail?.(item);
+          }
+        }}
       >
         <div className={styles.poster}>
           {selectable && (
@@ -87,7 +94,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({
             <StarRating value={item.rating} onChange={handleRatingChange} size="sm" />
           </div>
         </div>
-      </button>
+      </div>
 
       <div className={styles.actions}>
         <button
@@ -96,12 +103,12 @@ export const MediaCard: React.FC<MediaCardProps> = ({
         >
           {item.status === "watched" ? (
             <>
-              <FiEyeOff aria-hidden="true" />
+              <EyeOff aria-hidden="true" />
               Unwatched
             </>
           ) : (
             <>
-              <FiEye aria-hidden="true" />
+              <Eye aria-hidden="true" />
               Watched
             </>
           )}

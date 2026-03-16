@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import styles from "./style.module.css";
-import { FiFilm, FiList, FiSettings, FiCompass } from "react-icons/fi";
+import { Compass, Film, List, Settings } from "lucide-react";
 
 export const Navigation: React.FC = () => {
   const pathname = usePathname();
@@ -15,7 +15,7 @@ export const Navigation: React.FC = () => {
     <nav className={styles.nav}>
       <div className={styles.container}>
         <Link href="/" className={styles.logo}>
-          <FiFilm className={styles.logoIcon} aria-hidden="true" />
+          <Film className={styles.logoIcon} aria-hidden="true" />
           <span className={styles.logoText}>Media Tracker</span>
         </Link>
 
@@ -25,7 +25,7 @@ export const Navigation: React.FC = () => {
               href="/explore"
               className={`${styles.link} ${isActive("/explore") ? styles.active : ""}`}
             >
-              <FiCompass className={styles.linkIcon} aria-hidden="true" />
+              <Compass className={styles.linkIcon} aria-hidden="true" />
               <span className={styles.linkText}>Explore</span>
             </Link>
           </li>
@@ -34,7 +34,7 @@ export const Navigation: React.FC = () => {
               href="/list"
               className={`${styles.link} ${isActive("/list") ? styles.active : ""}`}
             >
-              <FiList className={styles.linkIcon} aria-hidden="true" />
+              <List className={styles.linkIcon} aria-hidden="true" />
               <span className={styles.linkText}>My List</span>
             </Link>
           </li>
@@ -43,7 +43,7 @@ export const Navigation: React.FC = () => {
               href="/settings"
               className={`${styles.link} ${isActive("/settings") ? styles.active : ""}`}
             >
-              <FiSettings className={styles.linkIcon} aria-hidden="true" />
+              <Settings className={styles.linkIcon} aria-hidden="true" />
               <span className={styles.linkText}>Settings</span>
             </Link>
           </li>
