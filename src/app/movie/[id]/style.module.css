@@ -96,6 +96,13 @@
   transition: all 0.2s ease;
 }
 
+.buttonIcon {
+  width: 1em;
+  height: 1em;
+  margin-right: 0.4rem;
+  flex-shrink: 0;
+}
+
 .actionButton:hover {
   transform: translateY(-1px);
   border-color: rgba(255, 255, 255, 0.45);

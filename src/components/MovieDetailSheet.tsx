@@ -204,7 +204,7 @@ export const MovieDetailSheet = ({ movie, open, onClose }: MovieDetailSheetProps
     <div className={styles.content}>
       <div className={styles.header}>
         <button type="button" className={styles.backButton} onClick={onClose}>
-          <ArrowLeft size={18} aria-hidden="true" />
+          <ArrowLeft className={styles.backIcon} aria-hidden="true" />
         </button>
         <div className={styles.titleBlock}>
           <h2 className={styles.title}>{detail?.title ?? movie?.title}</h2>
@@ -259,12 +259,12 @@ export const MovieDetailSheet = ({ movie, open, onClose }: MovieDetailSheetProps
               >
                 {existing?.status === "watchlist" ? (
                   <>
-                    <Trash className="mr-2 h-4 w-4" />
+                    <Trash className={styles.buttonIcon} />
                     Remove from Watchlist
                   </>
                 ) : (
                   <>
-                    <BookmarkPlus className="mr-2 h-4 w-4" />
+                    <BookmarkPlus className={styles.buttonIcon} />
                     Save to Watchlist
                   </>
                 )}
@@ -279,12 +279,12 @@ export const MovieDetailSheet = ({ movie, open, onClose }: MovieDetailSheetProps
               >
                 {existing?.status === "watched" ? (
                   <>
-                    <Trash className="mr-2 h-4 w-4" />
+                    <Trash className={styles.buttonIcon} />
                     Remove from Watched
                   </>
                 ) : (
                   <>
-                    <CheckCircle className="mr-2 h-4 w-4" />
+                    <CheckCircle className={styles.buttonIcon} />
                     Mark as Watched
                   </>
                 )}

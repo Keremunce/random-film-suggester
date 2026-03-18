@@ -94,7 +94,7 @@ export const SearchResult: React.FC<SearchResultProps> = ({
           onClick={onAdd}
           disabled={isAdded}
         >
-          <BookmarkPlus className="mr-2 h-4 w-4" />
+          <BookmarkPlus className={styles.buttonIcon} />
           {isAdded ? "Saved" : "Watchlist"}
         </Button>
         {onAddWatched && (
@@ -104,7 +104,7 @@ export const SearchResult: React.FC<SearchResultProps> = ({
             onClick={onAddWatched}
             disabled={isWatched}
           >
-            <CheckCircle className="mr-2 h-4 w-4" />
+            <CheckCircle className={styles.buttonIcon} />
             {isWatched ? "Watched" : "Watched"}
           </Button>
         )}

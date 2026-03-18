@@ -254,3 +254,10 @@
   cursor: not-allowed;
   opacity: 0.7;
 }
+
+.buttonIcon {
+  width: 1em;
+  height: 1em;
+  margin-right: 0.4rem;
+  flex-shrink: 0;
+}

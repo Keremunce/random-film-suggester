@@ -50,3 +50,28 @@ export const sortByReleaseOldest = (items: MediaItem[]): MediaItem[] => {
     return aTime - bTime;
   });
 };
+
+const ratingValue = (value: number | null | undefined) =>
+  typeof value === "number" && !Number.isNaN(value) ? value : null;
+
+export const sortByRatingHigh = (items: MediaItem[]): MediaItem[] => {
+  return [...items].sort((a, b) => {
+    const aRating = ratingValue(a.rating);
+    const bRating = ratingValue(b.rating);
+    if (aRating === null && bRating === null) return 0;
+    if (aRating === null) return 1;
+    if (bRating === null) return -1;
+    return bRating - aRating;
+  });
+};
+
+export const sortByRatingLow = (items: MediaItem[]): MediaItem[] => {
+  return [...items].sort((a, b) => {
+    const aRating = ratingValue(a.rating);
+    const bRating = ratingValue(b.rating);
+    if (aRating === null && bRating === null) return 0;
+    if (aRating === null) return 1;
+    if (bRating === null) return -1;
+    return aRating - bRating;
+  });
+};

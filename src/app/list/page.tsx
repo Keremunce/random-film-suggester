@@ -10,6 +10,8 @@ import {
   sortByRecentlyAdded,
   sortByReleaseNewest,
   sortByReleaseOldest,
+  sortByRatingHigh,
+  sortByRatingLow,
 } from "@/utils/sortMovies";
 import { SegmentedControl } from "@/components/SegmentedControl";
 import { Select, SelectContent, SelectItem, SelectLabel } from "@/components/ui/select";
@@ -35,7 +37,7 @@ export default function MyListPage() {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [typeFilter, setTypeFilter] = useState<TypeFilter>("all");
   const [sortBy, setSortBy] = useState<
-    "recent" | "oldest" | "release-newest" | "release-oldest"
+    "recent" | "oldest" | "release-newest" | "release-oldest" | "rating-high" | "rating-low"
   >("recent");
   const [suggestedItem, setSuggestedItem] = useState<MediaItem | null>(null);
   const [suggestionNote, setSuggestionNote] = useState<string | null>(null);
@@ -68,6 +70,10 @@ export default function MyListPage() {
         return sortByReleaseNewest(searchedItems);
       case "release-oldest":
         return sortByReleaseOldest(searchedItems);
+      case "rating-high":
+        return sortByRatingHigh(searchedItems);
+      case "rating-low":
+        return sortByRatingLow(searchedItems);
       case "recent":
       default:
         return sortByRecentlyAdded(searchedItems);
@@ -457,7 +463,15 @@ export default function MyListPage() {
           <Select
             value={sortBy}
             onValueChange={(value) =>
-              setSortBy(value as "recent" | "oldest" | "release-newest" | "release-oldest")
+              setSortBy(
+                value as
+                  | "recent"
+                  | "oldest"
+                  | "release-newest"
+                  | "release-oldest"
+                  | "rating-high"
+                  | "rating-low"
+              )
             }
           >
             <SelectLabel>
@@ -467,6 +481,8 @@ export default function MyListPage() {
                 <SelectItem value="oldest">Oldest Added</SelectItem>
                 <SelectItem value="release-newest">Release Date (Newest)</SelectItem>
                 <SelectItem value="release-oldest">Release Date (Oldest)</SelectItem>
+                <SelectItem value="rating-high">Rating (High to Low)</SelectItem>
+                <SelectItem value="rating-low">Rating (Low to High)</SelectItem>
               </SelectContent>
             </SelectLabel>
           </Select>

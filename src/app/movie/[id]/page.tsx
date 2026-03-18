@@ -178,12 +178,12 @@ export default function MovieDetailPage() {
               >
                 {isWatchlist ? (
                   <>
-                    <Trash className="mr-2 h-4 w-4" />
+                    <Trash className={styles.buttonIcon} />
                     Remove from Watchlist
                   </>
                 ) : (
                   <>
-                    <BookmarkPlus className="mr-2 h-4 w-4" />
+                    <BookmarkPlus className={styles.buttonIcon} />
                     Save to Watchlist
                   </>
                 )}
@@ -198,12 +198,12 @@ export default function MovieDetailPage() {
               >
                 {isWatched ? (
                   <>
-                    <Trash className="mr-2 h-4 w-4" />
+                    <Trash className={styles.buttonIcon} />
                     Remove from Watched
                   </>
                 ) : (
                   <>
-                    <CheckCircle className="mr-2 h-4 w-4" />
+                    <CheckCircle className={styles.buttonIcon} />
                     Mark as Watched
                   </>
                 )}

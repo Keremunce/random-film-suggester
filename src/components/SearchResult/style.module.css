@@ -136,6 +136,13 @@
   cursor: not-allowed;
 }
 
+.buttonIcon {
+  width: 1em;
+  height: 1em;
+  margin-right: 0.4rem;
+  flex-shrink: 0;
+}
+
 @media (max-width: 640px) {
   .result {
     gap: 0.75rem;

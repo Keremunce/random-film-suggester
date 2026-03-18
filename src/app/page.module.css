@@ -145,6 +145,13 @@
   gap: 0.5rem;
 }
 
+.buttonIcon {
+  width: 1em;
+  height: 1em;
+  margin-right: 0.4rem;
+  flex-shrink: 0;
+}
+
 .saveButton {
   display: inline-flex;
   align-items: center;

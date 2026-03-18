@@ -151,7 +151,7 @@ export default function TopRatedPage() {
               handleSave(item);
             }}
           >
-            <BookmarkPlus className="mr-2 h-4 w-4" />
+            <BookmarkPlus className={homeStyles.buttonIcon} />
             {isSaved ? "Saved" : "Watchlist"}
           </Button>
           <span className={homeStyles.typeBadge}>Movie</span>

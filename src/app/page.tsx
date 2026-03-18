@@ -325,7 +325,7 @@ export default function HomePage() {
               handleSave(item);
             }}
           >
-            <BookmarkPlus className="mr-2 h-4 w-4" />
+            <BookmarkPlus className={styles.buttonIcon} />
             {isSaved ? "Saved" : "Watchlist"}
           </Button>
           <span className={styles.typeBadge}>

@@ -504,7 +504,7 @@ function ExplorePageContent() {
                         handleAddWatchlist(item);
                       }}
                     >
-                      <BookmarkPlus className="mr-2 h-4 w-4" />
+                      <BookmarkPlus className={styles.buttonIcon} />
                       {isSaved ? "Saved" : "Watchlist"}
                     </Button>
                     <Button
@@ -518,7 +518,7 @@ function ExplorePageContent() {
                       }}
                       disabled={isWatched}
                     >
-                      <CheckCircle className="mr-2 h-4 w-4" />
+                      <CheckCircle className={styles.buttonIcon} />
                       {isWatched ? "Watched" : "Watched"}
                     </Button>
                   </div>
