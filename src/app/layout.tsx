@@ -3,6 +3,7 @@ import "./globals.css";
 import { MovieProvider } from "./context/MovieContext";
 import { Navigation } from "@/components/Navigation";
 import { Toaster } from "@/components/ui/toaster";
+import { AppVersion } from "@/components/AppVersion";
 
 export const metadata: Metadata = {
 	title: "Media Tracker",
@@ -38,6 +39,7 @@ export default function RootLayout({
 					<Navigation />
 					{children}
 					<Toaster />
+					<AppVersion />
 				</MovieProvider>
 			</body>
 		</html>
