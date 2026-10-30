@@ -162,102 +162,38 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1.25rem;
 }
 
-.card {
-  background: rgba(18, 24, 41, 0.6);
-  border-radius: 18px;
-  padding: 0.75rem;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+.loadMoreRow {
   display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+  justify-content: center;
 }
 
-.cardLink {
-  text-decoration: none;
-  color: inherit;
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-}
-
-.cardPoster {
-  position: relative;
-  width: 100%;
-  padding-top: 150%;
-  border-radius: 14px;
-  overflow: hidden;
-}
-
-.cardPosterImage {
-  object-fit: cover;
-}
-
-.cardInfo h3 {
-  margin: 0;
-  font-size: 0.95rem;
+.loadMoreButton {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
   color: #ffffff;
-}
-
-.cardInfo p {
-  margin: 0.25rem 0 0 0;
-  font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.6);
-}
-
-.saveButton {
-  display: inline-flex;
-  align-items: center;
-  border: none;
+  padding: 0.6rem 1.4rem;
   border-radius: 999px;
-  padding: 0.45rem 0.9rem;
-  font-size: 0.75rem;
   font-weight: 600;
-  background: rgba(255, 255, 255, 0.15);
-  color: #ffffff;
   cursor: pointer;
 }
 
-.saveButton.saved {
-  background: rgba(5, 206, 145, 0.9);
-  color: #0b2a1f;
-}
-
-.cardActions {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-
-.watchedButton {
-  display: inline-flex;
-  align-items: center;
-  border: none;
-  border-radius: 999px;
-  padding: 0.45rem 0.9rem;
-  font-size: 0.75rem;
-  font-weight: 600;
-  background: rgba(255, 255, 255, 0.12);
-  color: #ffffff;
-  cursor: pointer;
-}
-
-.watchedActive {
-  background: rgba(5, 206, 145, 0.9);
-  color: #0b2a1f;
-}
-
-.watchedButton:disabled {
+.loadMoreButton:disabled {
+  opacity: 0.6;
   cursor: not-allowed;
-  opacity: 0.7;
 }
 
-.buttonIcon {
-  width: 1em;
-  height: 1em;
-  margin-right: 0.4rem;
-  flex-shrink: 0;
+@media (min-width: 640px) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
 }

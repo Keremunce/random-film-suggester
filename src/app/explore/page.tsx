@@ -9,14 +9,12 @@ import React, {
   useState,
 } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { MovieContext } from "@/app/context/MovieContext";
+import { DiscoveryCard } from "@/components/DiscoveryCard";
 import { SearchResult } from "@/components/SearchResult";
 import { MovieDetailSheet } from "@/components/MovieDetailSheet";
 import { showToast } from "@/utils/showToast";
-import { Button } from "@/components/ui/button";
-import { BookmarkPlus, CheckCircle } from "lucide-react";
 import styles from "./style.module.css";
 
 type Genre = {
@@ -33,6 +31,23 @@ type MovieItem = {
   voteAverage: number | null;
 };
 
+type DiscoverResponse = {
+  results?: MovieItem[];
+  total_pages?: number;
+};
+
+type ExploreSnapshot = {
+  selectedGenres: number[];
+  releaseYear: string;
+  minVote: string;
+  sortBy: string;
+  results: MovieItem[];
+  page: number;
+  totalPages: number;
+  queryString: string;
+  scrollY: number;
+};
+
 type SearchResultData = {
   tmdbId: number;
   type: "movie" | "tv";
@@ -43,10 +58,10 @@ type SearchResultData = {
   voteAverage: number | null;
 };
 
-const POSTER_BASE = "https://image.tmdb.org/t/p/w342";
-
 const generateId = () =>
   `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
+const EXPLORE_SNAPSHOT_KEY = "media-tracker:explore-snapshot";
 
 function ExplorePageContent() {
   const context = useContext(MovieContext);
@@ -62,7 +77,11 @@ function ExplorePageContent() {
   const [minVote, setMinVote] = useState("");
   const [sortBy, setSortBy] = useState("popularity.desc");
   const [results, setResults] = useState<MovieItem[]>([]);
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [stateReady, setStateReady] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResultData[]>([]);
@@ -70,6 +89,10 @@ function ExplorePageContent() {
   const [searchError, setSearchError] = useState<string | null>(null);
   const searchDebounceRef = useRef<NodeJS.Timeout | null>(null);
   const lastQueryRef = useRef<string | null>(null);
+  const resultsRequestIdRef = useRef(0);
+  const resultsQueryRef = useRef<string | null>(null);
+  const skipResultsFetchRef = useRef(false);
+  const scrollYRef = useRef(0);
   const [selectedItem, setSelectedItem] = useState<SearchResultData | null>(null);
   const [pressedId, setPressedId] = useState<number | null>(null);
 
@@ -113,22 +136,161 @@ function ExplorePageContent() {
   }, [selectedGenres, releaseYear, minVote, sortBy]);
 
   useEffect(() => {
+    try {
+      const saved = sessionStorage.getItem(EXPLORE_SNAPSHOT_KEY);
+      if (saved) {
+        const snapshot = JSON.parse(saved) as Partial<ExploreSnapshot>;
+        if (
+          Array.isArray(snapshot.selectedGenres) &&
+          snapshot.selectedGenres.every((genreId) => typeof genreId === "number") &&
+          typeof snapshot.releaseYear === "string" &&
+          typeof snapshot.minVote === "string" &&
+          typeof snapshot.sortBy === "string" &&
+          typeof snapshot.scrollY === "number"
+        ) {
+          const snapshotQuery = new URLSearchParams();
+          if (snapshot.selectedGenres.length > 0) {
+            snapshotQuery.set("with_genres", snapshot.selectedGenres.join(","));
+          }
+          if (snapshot.releaseYear) {
+            snapshotQuery.set("primary_release_year", snapshot.releaseYear);
+          }
+          if (snapshot.minVote) {
+            snapshotQuery.set("vote_average_gte", snapshot.minVote);
+          }
+          if (snapshot.sortBy) snapshotQuery.set("sort_by", snapshot.sortBy);
+
+          setSelectedGenres(snapshot.selectedGenres);
+          setReleaseYear(snapshot.releaseYear);
+          setMinVote(snapshot.minVote);
+          setSortBy(snapshot.sortBy);
+          scrollYRef.current = snapshot.scrollY;
+
+          if (
+            snapshot.queryString === snapshotQuery.toString() &&
+            Array.isArray(snapshot.results) &&
+            typeof snapshot.page === "number" &&
+            Number.isInteger(snapshot.page) &&
+            snapshot.page > 0 &&
+            typeof snapshot.totalPages === "number" &&
+            Number.isInteger(snapshot.totalPages) &&
+            snapshot.totalPages >= snapshot.page
+          ) {
+            setResults(snapshot.results);
+            setPage(snapshot.page);
+            setTotalPages(snapshot.totalPages);
+            setLoading(false);
+            setLoadingMore(false);
+            resultsQueryRef.current = snapshot.queryString;
+            skipResultsFetchRef.current = true;
+          }
+
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              window.scrollTo({ top: scrollYRef.current, behavior: "auto" });
+            });
+          });
+        }
+      }
+    } catch (snapshotError) {
+      console.error("Failed to restore Explore state.", snapshotError);
+    }
+
+    setStateReady(true);
+  }, []);
+
+  useEffect(() => {
+    if (!stateReady) return;
+
+    const snapshot: ExploreSnapshot = {
+      selectedGenres,
+      releaseYear,
+      minVote,
+      sortBy,
+      results: resultsQueryRef.current === queryString ? results : [],
+      page: resultsQueryRef.current === queryString ? page : 0,
+      totalPages,
+      queryString,
+      scrollY: scrollYRef.current,
+    };
+
+    try {
+      sessionStorage.setItem(EXPLORE_SNAPSHOT_KEY, JSON.stringify(snapshot));
+    } catch (snapshotError) {
+      console.error("Failed to save Explore state.", snapshotError);
+    }
+  }, [
+    minVote,
+    page,
+    queryString,
+    releaseYear,
+    results,
+    selectedGenres,
+    sortBy,
+    stateReady,
+    totalPages,
+  ]);
+
+  useEffect(() => {
+    const saveScrollPosition = () => {
+      scrollYRef.current = window.scrollY;
+    };
+
+    window.addEventListener("scroll", saveScrollPosition, { passive: true });
+    return () => {
+      saveScrollPosition();
+      try {
+        const saved = sessionStorage.getItem(EXPLORE_SNAPSHOT_KEY);
+        if (saved) {
+          const snapshot = JSON.parse(saved) as Partial<ExploreSnapshot>;
+          if (typeof snapshot === "object" && snapshot !== null) {
+            sessionStorage.setItem(
+              EXPLORE_SNAPSHOT_KEY,
+              JSON.stringify({ ...snapshot, scrollY: scrollYRef.current }),
+            );
+          }
+        }
+      } catch (snapshotError) {
+        console.error("Failed to save Explore scroll position.", snapshotError);
+      }
+      window.removeEventListener("scroll", saveScrollPosition);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!stateReady) return;
+    if (skipResultsFetchRef.current) {
+      skipResultsFetchRef.current = false;
+      return;
+    }
+
     let isMounted = true;
+    const requestId = ++resultsRequestIdRef.current;
 
     const loadResults = async () => {
       try {
         setLoading(true);
+        setLoadingMore(false);
+        resultsQueryRef.current = null;
+        setResults([]);
+        setPage(0);
+        setTotalPages(1);
         setError(null);
-        const res = await fetch(`/api/discover?${queryString}`);
+        const params = new URLSearchParams(queryString);
+        params.set("page", "1");
+        const res = await fetch(`/api/discover?${params.toString()}`);
         if (!res.ok) throw new Error("Failed to load discoveries");
-        const data = await res.json();
-        if (!isMounted) return;
+        const data = (await res.json()) as DiscoverResponse;
+        if (!isMounted || resultsRequestIdRef.current !== requestId) return;
         setResults(data.results || []);
+        resultsQueryRef.current = queryString;
+        setPage(1);
+        setTotalPages(data.total_pages ?? 1);
       } catch {
-        if (!isMounted) return;
+        if (!isMounted || resultsRequestIdRef.current !== requestId) return;
         setError("Failed to load results.");
       } finally {
-        if (!isMounted) return;
+        if (!isMounted || resultsRequestIdRef.current !== requestId) return;
         setLoading(false);
       }
     };
@@ -137,7 +299,39 @@ function ExplorePageContent() {
     return () => {
       isMounted = false;
     };
-  }, [queryString]);
+  }, [queryString, stateReady]);
+
+  const handleLoadMore = async () => {
+    if (loading || loadingMore || page >= totalPages) return;
+
+    const requestId = resultsRequestIdRef.current;
+    const nextPage = page + 1;
+    const params = new URLSearchParams(queryString);
+    params.set("page", String(nextPage));
+
+    setLoadingMore(true);
+    setError(null);
+    try {
+      const res = await fetch(`/api/discover?${params.toString()}`);
+      if (!res.ok) throw new Error("Failed to load more discoveries");
+      const data = (await res.json()) as DiscoverResponse;
+      if (resultsRequestIdRef.current !== requestId) return;
+
+      const nextResults = data.results || [];
+      setResults((current) => {
+        const seen = new Set(current.map((item) => item.tmdbId));
+        return [...current, ...nextResults.filter((item) => !seen.has(item.tmdbId))];
+      });
+      setPage(nextPage);
+      setTotalPages(data.total_pages ?? nextPage);
+    } catch {
+      if (resultsRequestIdRef.current === requestId) {
+        setError("Failed to load more results. Please try again.");
+      }
+    } finally {
+      if (resultsRequestIdRef.current === requestId) setLoadingMore(false);
+    }
+  };
 
   const handleToggleGenre = (id: number) => {
     setSelectedGenres((prev) =>
@@ -152,7 +346,8 @@ function ExplorePageContent() {
     const existing = getExistingItem(item.tmdbId, item.type);
     if (existing) {
       if (existing.status === "watchlist") {
-        showToast("Already in your list", "warning");
+        dispatch({ type: "REMOVE_ITEM", payload: { id: existing.id } });
+        showToast("Removed from Watchlist");
       } else {
         dispatch({ type: "UPDATE_ITEM", payload: { ...existing, status: "watchlist" } });
         showToast("Added to Watchlist");
@@ -256,9 +451,6 @@ function ExplorePageContent() {
     }
   }, [performSearch, searchParams]);
 
-  const formatYear = (date: string | null) =>
-    date ? new Date(date).getFullYear() : "N/A";
-
   return (
     <div className={styles.page}>
       <header className={styles.header}>
@@ -338,7 +530,8 @@ function ExplorePageContent() {
                       return;
                     }
                     if (existing.status === "watchlist") {
-                      showToast("Already in your list", "warning");
+                      dispatch({ type: "REMOVE_ITEM", payload: { id: existing.id } });
+                      showToast("Removed from Watchlist");
                       return;
                     }
                     dispatch({
@@ -464,67 +657,31 @@ function ExplorePageContent() {
               const existing = getExistingItem(item.tmdbId);
               const isSaved = existing?.status === "watchlist";
               const isWatched = existing?.status === "watched";
-              const posterUrl = item.posterPath
-                ? `${POSTER_BASE}${item.posterPath}`
-                : "https://via.placeholder.com/342x513?text=No+Poster";
 
               return (
-                <div
+                <DiscoveryCard
                   key={`${item.type}-${item.tmdbId}`}
-                  className={`${styles.card} transition-transform duration-150 ${
-                    pressedId === item.tmdbId ? "scale-95" : ""
-                  }`}
-                >
-                  <Link href={`/detail/${item.type}/${item.tmdbId}`} className={styles.cardLink}>
-                    <div className={styles.cardPoster}>
-                      <Image
-                        src={posterUrl}
-                        alt={item.title}
-                        fill
-                        sizes="(max-width: 640px) 45vw, (max-width: 1024px) 22vw, 180px"
-                        className={styles.cardPosterImage}
-                      />
-                    </div>
-                    <div className={styles.cardInfo}>
-                      <h3>{item.title}</h3>
-                      <p>
-                        {formatYear(item.releaseDate)}
-                        {item.voteAverage ? ` • ${item.voteAverage.toFixed(1)}` : ""}
-                      </p>
-                    </div>
-                  </Link>
-                  <div className={styles.cardActions}>
-                    <Button
-                      type="button"
-                      unstyled
-                      className={`${styles.saveButton} ${isSaved ? styles.saved : ""}`}
-                      onClick={() => {
-                        setPressedId(item.tmdbId);
-                        window.setTimeout(() => setPressedId(null), 120);
-                        handleAddWatchlist(item);
-                      }}
-                    >
-                      <BookmarkPlus className={styles.buttonIcon} />
-                      {isSaved ? "Saved" : "Watchlist"}
-                    </Button>
-                    <Button
-                      type="button"
-                      unstyled
-                      className={`${styles.watchedButton} ${isWatched ? styles.watchedActive : ""}`}
-                      onClick={() => {
-                        setPressedId(item.tmdbId);
-                        window.setTimeout(() => setPressedId(null), 120);
-                        handleAddWatched(item);
-                      }}
-                      disabled={isWatched}
-                    >
-                      <CheckCircle className={styles.buttonIcon} />
-                      {isWatched ? "Watched" : "Watched"}
-                    </Button>
-                  </div>
-                </div>
+                  item={item}
+                  isSaved={isSaved}
+                  isWatched={isWatched}
+                  onOpen={() => router.push(`/detail/${item.type}/${item.tmdbId}`)}
+                  onWatchlistAction={() => handleAddWatchlist(item)}
+                  onMarkWatched={() => handleAddWatched(item)}
+                />
               );
             })}
+          </div>
+        )}
+        {!loading && results.length > 0 && page < totalPages && (
+          <div className={styles.loadMoreRow}>
+            <button
+              type="button"
+              className={styles.loadMoreButton}
+              onClick={handleLoadMore}
+              disabled={loadingMore}
+            >
+              {loadingMore ? "Loading..." : "Show more"}
+            </button>
           </div>
         )}
       </section>

@@ -1,16 +1,25 @@
 .card {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  padding: 0.75rem;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  min-width: 0;
+  gap: 0.65rem;
+  padding: 0.65rem;
+  border: 1px solid rgba(255, 255, 255, 0.07);
   border-radius: 12px;
-  background: rgba(18, 24, 41, 0.7);
-  transition: box-shadow 0.2s ease;
+  background: rgba(18, 24, 41, 0.55);
+  transition: all 0.3s ease;
 }
 
 .card:hover {
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+  z-index: 5;
+  background: rgba(18, 24, 41, 0.8);
+  transform: translateY(-5px);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.3);
+}
+
+.card:focus-within {
+  z-index: 5;
 }
 
 .poster {
@@ -22,11 +31,26 @@
   background: rgba(255, 255, 255, 0.08);
 }
 
+.posterImage {
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.card:hover .posterImage {
+  transform: scale(1.025);
+}
+
+.posterLink {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
 .selectBox {
   position: absolute;
   top: 8px;
   left: 8px;
-  z-index: 2;
+  z-index: 3;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -62,15 +86,6 @@
   background: #ffffff;
 }
 
-.posterImage {
-  object-fit: cover;
-}
-
-.posterLink {
-  position: absolute;
-  inset: 0;
-}
-
 .openButton {
   border: none;
   background: transparent;
@@ -79,59 +94,185 @@
   color: inherit;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.25rem;
   cursor: pointer;
   width: 100%;
 }
 
 .content {
-  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  min-width: 0;
+  gap: 0.45rem;
 }
 
 .title {
   margin: 0;
-  font-size: 1rem;
+  min-width: 0;
+  font-size: 0.9rem;
   font-weight: 600;
-  line-height: 1.3;
+  line-height: 1.25;
   color: var(--color-grey-50);
+  white-space: nowrap;
+  overflow: hidden;
+  container-type: inline-size;
+}
+
+.titleText {
+  display: block;
+  width: max-content;
+  white-space: nowrap;
+}
+
+.card:hover .titleText {
+  animation: titlePingPong 3s ease-in-out infinite alternate;
+}
+
+@keyframes titlePingPong {
+  to {
+    transform: translateX(min(0px, calc(100cqi - 100%)));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card:hover .titleText {
+    animation: none;
+  }
 }
 
 .meta {
   margin: 0;
-  font-size: 0.8rem;
+  font-size: 0.72rem;
   color: var(--color-grey-300);
   display: flex;
-  gap: 0.5rem;
+  gap: 0.35rem;
   align-items: center;
 }
 
+.metaRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
 .badge {
-  font-size: 0.75rem;
-  padding: 0.2rem 0.5rem;
+  font-size: 0.68rem;
+  padding: 0.12rem 0.4rem;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.08);
   color: var(--color-grey-100);
 }
 
 .rating {
-  display: flex;
+  position: relative;
+  align-self: flex-start;
+  z-index: 4;
+}
+
+.ratingTrigger {
+  display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.3rem;
+  min-height: 28px;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid rgba(255, 184, 0, 0.2);
+  border-radius: 999px;
+  background: rgba(255, 184, 0, 0.08);
+  color: #ffcf5a;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.ratingTrigger:hover,
+.ratingTrigger[aria-expanded="true"] {
+  border-color: rgba(255, 184, 0, 0.45);
+  background: rgba(255, 184, 0, 0.16);
+}
+
+.ratingTrigger svg {
+  width: 0.9rem;
+  height: 0.9rem;
+  fill: currentColor;
+}
+
+.ratingPopover {
+  position: absolute;
+  z-index: 20;
+  right: 0;
+  bottom: calc(100% + 0.5rem);
+  padding: 0.5rem 0.65rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  background: rgba(15, 23, 42, 0.98);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(5px) scale(0.98);
+  transform-origin: bottom right;
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease,
+    visibility 0.18s ease;
+}
+
+.ratingPopover > div {
+  gap: 0.12rem;
+  flex-wrap: nowrap;
+}
+
+.ratingPopover > div > button {
+  flex: 0 0 auto;
+  font-size: 1.05rem;
+}
+
+.ratingPopoverOpen {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+}
+
+.ratingTrigger:focus-visible {
+  outline: 2px solid #ffcf5a;
+  outline-offset: 2px;
 }
 
 .actions {
+  position: absolute;
+  z-index: 2;
+  inset: auto 0.5rem 0.5rem;
   display: flex;
-  gap: 0.5rem;
+  justify-content: flex-end;
+  gap: 0.4rem;
+  padding: 1.5rem 0.35rem 0.35rem;
+  border-radius: 0 0 9px 9px;
+  background: linear-gradient(transparent, rgba(8, 12, 24, 0.85));
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(4px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.poster:hover .actions,
+.poster:focus-within .actions {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
 }
 
 .statusBtn {
-  flex: 1;
-  padding: 0.5rem 1rem;
+  width: 34px;
+  height: 34px;
+  padding: 0;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 0.85rem;
   font-weight: 500;
   cursor: pointer;
@@ -145,8 +286,8 @@
 }
 
 .statusBtn svg {
-  width: 1em;
-  height: 1em;
+  width: 1rem;
+  height: 1rem;
 }
 
 .statusBtn:hover {
@@ -172,14 +313,16 @@
 }
 
 .removeBtn {
+  width: 34px;
+  height: 34px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.5rem 0.75rem;
+  padding: 0.5rem;
   border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 6px;
-  background: rgba(18, 24, 41, 0.75);
-  color: var(--color-grey-300);
+  border-radius: 8px;
+  background: rgba(18, 24, 41, 0.9);
+  color: #e2e8f0;
   cursor: pointer;
   font-size: 1rem;
   transition: all 0.2s ease;
@@ -194,4 +337,18 @@
   border-color: #ff6161;
   color: #ff6161;
   background-color: rgba(255, 97, 97, 0.12);
+}
+
+.statusBtn:focus-visible,
+.removeBtn:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+@media (hover: none) {
+  .actions {
+    opacity: 1;
+    pointer-events: auto;
+    transform: none;
+  }
 }

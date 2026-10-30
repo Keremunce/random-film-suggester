@@ -92,10 +92,11 @@ export const SearchResult: React.FC<SearchResultProps> = ({
           unstyled
           className={`${styles.addBtn} ${isAdded ? styles.added : ""}`}
           onClick={onAdd}
-          disabled={isAdded}
+          aria-label={isAdded ? `Remove ${title} from watchlist` : `Add ${title} to watchlist`}
+          title={isAdded ? "Remove from watchlist" : "Add to watchlist"}
         >
           <BookmarkPlus className={styles.buttonIcon} />
-          {isAdded ? "Saved" : "Watchlist"}
+          {isAdded ? "Remove" : "Watchlist"}
         </Button>
         {onAddWatched && (
           <Button

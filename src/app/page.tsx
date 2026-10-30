@@ -2,12 +2,11 @@
 
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { MovieContext } from "@/app/context/MovieContext";
+import { DiscoveryCard } from "@/components/DiscoveryCard";
 import { Button } from "@/components/ui/button";
 import { MovieDetailSheet } from "@/components/MovieDetailSheet";
 import { showToast } from "@/utils/showToast";
-import { BookmarkPlus } from "lucide-react";
 import styles from "./page.module.css";
 
 type MediaItem = {
@@ -25,13 +24,8 @@ type GenreCount = {
   count: number;
 };
 
-const POSTER_BASE = "https://image.tmdb.org/t/p/w342";
-
 const generateId = () =>
   `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-
-const formatYear = (date: string | null) =>
-  date ? new Date(date).getFullYear() : "N/A";
 
 export default function HomePage() {
   const context = useContext(MovieContext);
@@ -64,8 +58,6 @@ export default function HomePage() {
   const [tasteLoading, setTasteLoading] = useState(false);
   const [tasteError, setTasteError] = useState<string | null>(null);
   const [selectedItem, setSelectedItem] = useState<MediaItem | null>(null);
-  const [pressedId, setPressedId] = useState<number | null>(null);
-
   const watchlistMovieIds = useMemo(
     () =>
       state.items
@@ -248,8 +240,14 @@ export default function HomePage() {
 
   const handleSave = (item: MediaItem) => {
     const existing = getExistingItem(item.tmdbId, item.type);
-    if (existing) {
+    if (existing?.status === "watchlist") {
       dispatch({ type: "REMOVE_ITEM", payload: { id: existing.id } });
+      showToast("Removed from Watchlist");
+      return;
+    }
+    if (existing) {
+      dispatch({ type: "UPDATE_ITEM", payload: { ...existing, status: "watchlist" } });
+      showToast("Added to Watchlist");
       return;
     }
 
@@ -272,67 +270,14 @@ export default function HomePage() {
 
   const renderCard = (item: MediaItem) => {
     const existing = getExistingItem(item.tmdbId, item.type);
-    const isSaved = Boolean(existing);
-    const posterUrl = item.posterPath
-      ? `${POSTER_BASE}${item.posterPath}`
-      : "https://via.placeholder.com/342x513?text=No+Poster";
-
-    const content = (
-      <>
-        <div className={styles.cardPoster}>
-          <Image
-            src={posterUrl}
-            alt={item.title}
-            fill
-            sizes="(max-width: 640px) 45vw, (max-width: 1024px) 22vw, 180px"
-            className={styles.cardPosterImage}
-          />
-        </div>
-        <div className={styles.cardInfo}>
-          <div className={styles.cardTitle}>{item.title}</div>
-          <div className={styles.cardMeta}>
-            <span>{formatYear(item.releaseDate)}</span>
-            {item.voteAverage ? <span>• {item.voteAverage.toFixed(1)}</span> : null}
-          </div>
-        </div>
-      </>
-    );
-
-    const isPressed = pressedId === item.tmdbId;
     return (
-      <div
+      <DiscoveryCard
         key={`${item.type}-${item.tmdbId}`}
-        className={`${styles.card} transition-transform duration-150 ${
-          isPressed ? "scale-95" : ""
-        }`}
-      >
-        <button
-          type="button"
-          className={styles.cardLink}
-          onClick={() => setSelectedItem(item)}
-          aria-label={`Open details for ${item.title}`}
-        >
-          {content}
-        </button>
-        <div className={styles.cardActions}>
-          <Button
-            type="button"
-            unstyled
-            className={`${styles.saveButton} ${isSaved ? styles.saved : ""}`}
-            onClick={() => {
-              setPressedId(item.tmdbId);
-              window.setTimeout(() => setPressedId(null), 120);
-              handleSave(item);
-            }}
-          >
-            <BookmarkPlus className={styles.buttonIcon} />
-            {isSaved ? "Saved" : "Watchlist"}
-          </Button>
-          <span className={styles.typeBadge}>
-            {item.type === "movie" ? "Movie" : "Series"}
-          </span>
-        </div>
-      </div>
+        item={item}
+        isSaved={existing?.status === "watchlist"}
+        onOpen={() => setSelectedItem(item)}
+        onWatchlistAction={() => handleSave(item)}
+      />
     );
   };
 

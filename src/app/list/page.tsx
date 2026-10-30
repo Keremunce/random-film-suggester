@@ -14,7 +14,7 @@ import {
   sortByRatingLow,
 } from "@/utils/sortMovies";
 import { SegmentedControl } from "@/components/SegmentedControl";
-import { Select, SelectContent, SelectItem, SelectLabel } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem } from "@/components/ui/select";
 import styles from "./style.module.css";
 
 const SUGGESTION_STORAGE_KEY = "myList:suggestedMovie";
@@ -27,6 +27,15 @@ type StoredSuggestion = {
   rerollCount?: number;
 };
 
+type GenreFilter = "all" | "action" | "comedy" | "drama";
+
+const GENRE_FILTERS: { value: GenreFilter; label: string }[] = [
+  { value: "all", label: "All genres" },
+  { value: "action", label: "Action" },
+  { value: "comedy", label: "Comedy" },
+  { value: "drama", label: "Drama" },
+];
+
 export default function MyListPage() {
   const context = useContext(MovieContext);
   if (!context) throw new Error("MovieContext not found");
@@ -35,6 +44,11 @@ export default function MyListPage() {
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [typeFilter, setTypeFilter] = useState<TypeFilter>("all");
+  const [genreFilter, setGenreFilter] = useState<GenreFilter>("all");
+  const [genresByItemId, setGenresByItemId] = useState<Record<string, string[]>>({});
+  const genresByItemIdRef = useRef<Record<string, string[]>>({});
+  const [genresLoading, setGenresLoading] = useState(false);
+  const [genreError, setGenreError] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<
     "recent" | "oldest" | "release-newest" | "release-oldest" | "rating-high" | "rating-low"
   >("recent");
@@ -53,28 +67,39 @@ export default function MyListPage() {
     [],
   );
 
-  const filteredItems = filterUtils.filter(state.items, statusFilter, typeFilter);
+  const filteredItems = useMemo(
+    () => filterUtils.filter(state.items, statusFilter, typeFilter),
+    [state.items, statusFilter, typeFilter],
+  );
   const searchedItems = query.trim()
     ? filteredItems.filter((item) =>
         item.title.toLowerCase().includes(query.trim().toLowerCase())
       )
     : filteredItems;
+  const genreFilteredItems =
+    genreFilter === "all"
+      ? searchedItems
+      : searchedItems.filter((item) =>
+          genresByItemId[item.id]?.some(
+            (genre) => genre.toLowerCase() === genreFilter,
+          ),
+        );
 
   const sortedItems = (() => {
     switch (sortBy) {
       case "oldest":
-        return sortByOldestAdded(searchedItems);
+        return sortByOldestAdded(genreFilteredItems);
       case "release-newest":
-        return sortByReleaseNewest(searchedItems);
+        return sortByReleaseNewest(genreFilteredItems);
       case "release-oldest":
-        return sortByReleaseOldest(searchedItems);
+        return sortByReleaseOldest(genreFilteredItems);
       case "rating-high":
-        return sortByRatingHigh(searchedItems);
+        return sortByRatingHigh(genreFilteredItems);
       case "rating-low":
-        return sortByRatingLow(searchedItems);
+        return sortByRatingLow(genreFilteredItems);
       case "recent":
       default:
-        return sortByRecentlyAdded(searchedItems);
+        return sortByRecentlyAdded(genreFilteredItems);
     }
   })();
 
@@ -186,6 +211,86 @@ export default function MyListPage() {
       return next.size === prev.size ? prev : next;
     });
   }, [state.items]);
+
+  useEffect(() => {
+    if (genreFilter === "all") {
+      setGenresLoading(false);
+      setGenreError(null);
+      return;
+    }
+
+    const itemsToLoad = filteredItems.filter(
+      (item) => !genresByItemIdRef.current[item.id],
+    );
+    if (itemsToLoad.length === 0) {
+      setGenresLoading(false);
+      setGenreError(null);
+      return;
+    }
+
+    const controller = new AbortController();
+    let cancelled = false;
+    setGenresLoading(true);
+    setGenreError(null);
+
+    const loadGenres = async () => {
+      const results = await Promise.allSettled(
+        itemsToLoad.map(async (item) => {
+          const response = await fetch(
+            `/api/media/${item.tmdbId}?media_type=${item.type}`,
+            { signal: controller.signal },
+          );
+          if (!response.ok) {
+            throw new Error(`Failed to load genres for ${item.title}`);
+          }
+          const data: unknown = await response.json();
+          if (
+            typeof data !== "object" ||
+            data === null ||
+            !("genres" in data) ||
+            !Array.isArray(data.genres) ||
+            !data.genres.every((genre): genre is string => typeof genre === "string")
+          ) {
+            throw new Error(`Invalid genre data for ${item.title}`);
+          }
+          return { id: item.id, genres: data.genres };
+        }),
+      );
+
+      if (cancelled) return;
+
+      const loadedGenres: Record<string, string[]> = {};
+      let failedCount = 0;
+      results.forEach((result) => {
+        if (result.status === "fulfilled") {
+          loadedGenres[result.value.id] = result.value.genres;
+        } else {
+          failedCount += 1;
+        }
+      });
+
+      if (Object.keys(loadedGenres).length > 0) {
+        genresByItemIdRef.current = {
+          ...genresByItemIdRef.current,
+          ...loadedGenres,
+        };
+        setGenresByItemId((previous) => ({ ...previous, ...loadedGenres }));
+      }
+      setGenreError(
+        failedCount > 0
+          ? `Could not load genres for ${failedCount} ${failedCount === 1 ? "item" : "items"}.`
+          : null,
+      );
+      setGenresLoading(false);
+    };
+
+    void loadGenres();
+
+    return () => {
+      cancelled = true;
+      controller.abort();
+    };
+  }, [filteredItems, genreFilter]);
 
   const triggerConfetti = () => {
     if (confettiTimerRef.current) clearTimeout(confettiTimerRef.current);
@@ -457,7 +562,18 @@ export default function MyListPage() {
           />
         </div>
 
-        <div className={styles.filterGroup}>
+      </div>
+
+      <div className={styles.subcategoryFilters}>
+        <SegmentedControl
+          ariaLabel="Filter list by genre"
+          value={genreFilter}
+          onChange={setGenreFilter}
+          className={styles.subcategoryControl}
+          stretch
+          options={GENRE_FILTERS}
+        />
+        <div className={`${styles.filterGroup} ${styles.sortGroup}`}>
           <Select
             value={sortBy}
             onValueChange={(value) =>
@@ -472,20 +588,27 @@ export default function MyListPage() {
               )
             }
           >
-            <SelectLabel>
-              Sort list
-              <SelectContent>
-                <SelectItem value="recent">Recently Added</SelectItem>
-                <SelectItem value="oldest">Oldest Added</SelectItem>
-                <SelectItem value="release-newest">Release Date (Newest)</SelectItem>
-                <SelectItem value="release-oldest">Release Date (Oldest)</SelectItem>
-                <SelectItem value="rating-high">Rating (High to Low)</SelectItem>
-                <SelectItem value="rating-low">Rating (Low to High)</SelectItem>
-              </SelectContent>
-            </SelectLabel>
+            <SelectContent ariaLabel="Sort list">
+              <SelectItem value="recent">Recently Added</SelectItem>
+              <SelectItem value="oldest">Oldest Added</SelectItem>
+              <SelectItem value="release-newest">Release Date (Newest)</SelectItem>
+              <SelectItem value="release-oldest">Release Date (Oldest)</SelectItem>
+              <SelectItem value="rating-high">Rating (High to Low)</SelectItem>
+              <SelectItem value="rating-low">Rating (Low to High)</SelectItem>
+            </SelectContent>
           </Select>
         </div>
       </div>
+      {genresLoading && genreFilter !== "all" && (
+        <p className={styles.genreStatus} role="status">
+          Loading {genreFilter} titles...
+        </p>
+      )}
+      {genreError && (
+        <p className={styles.genreError} role="alert">
+          {genreError}
+        </p>
+      )}
 
       {sortedItems.length > 0 && (
         <div className={styles.selectRow}>
@@ -538,8 +661,18 @@ export default function MyListPage() {
 
       {sortedItems.length === 0 ? (
         <div className={styles.empty}>
-          <p>No items in your list</p>
-          <p className={styles.hint}>Search and add movies or series to get started</p>
+          <p>
+            {genresLoading
+              ? `Finding ${genreFilter} titles...`
+              : genreFilter !== "all" && state.items.length > 0
+                ? `No ${genreFilter} titles match these filters`
+                : "No items in your list"}
+          </p>
+          <p className={styles.hint}>
+            {genreFilter !== "all" && state.items.length > 0
+              ? "Try another genre or adjust your filters"
+              : "Search and add movies or series to get started"}
+          </p>
         </div>
       ) : (
         <div className={styles.items}>

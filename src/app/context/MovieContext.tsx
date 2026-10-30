@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useReducer, ReactNode, useEffect, useState } from "react";
+import React, { createContext, useReducer, ReactNode, useEffect, useMemo, useState } from "react";
 
 // Local storage key
 const STORAGE_KEY = "rfs_media_items";
@@ -60,6 +60,7 @@ const MovieProvider = ({ children }: { children: ReactNode }) => {
 
 	const [state, dispatch] = useReducer(movieReducer, initialState);
 	const [isHydrated, setIsHydrated] = useState(false);
+	const contextValue = useMemo(() => ({ state, dispatch }), [state, dispatch]);
 
 	// Load from localStorage on mount
 	useEffect(() => {
@@ -90,7 +91,7 @@ const MovieProvider = ({ children }: { children: ReactNode }) => {
 		}
 	}, [isHydrated, state.items]);
 
-	return <MovieContext.Provider value={{ state, dispatch }}>{children}</MovieContext.Provider>;
+	return <MovieContext.Provider value={contextValue}>{children}</MovieContext.Provider>;
 };
 
 export { MovieContext, MovieProvider };

@@ -1,14 +1,11 @@
 "use client";
 
 import React, { useContext, useEffect, useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { MovieContext } from "@/app/context/MovieContext";
+import { DiscoveryCard } from "@/components/DiscoveryCard";
 import styles from "../shared.module.css";
-import homeStyles from "@/app/page.module.css";
 import { showToast } from "@/utils/showToast";
-import { Button } from "@/components/ui/button";
-import { BookmarkPlus } from "lucide-react";
 
 type ApiItem = {
   tmdbId: number;
@@ -24,26 +21,20 @@ type ApiResponse = {
   total_pages?: number;
 };
 
-const POSTER_BASE = "https://image.tmdb.org/t/p/w342";
-
 const generateId = () =>
   `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-
-const formatYear = (date: string | null) =>
-  date ? new Date(date).getFullYear() : "N/A";
 
 export default function TopRatedPage() {
   const context = useContext(MovieContext);
   if (!context) throw new Error("MovieContext not found");
   const { state, dispatch } = context;
+  const router = useRouter();
 
   const [items, setItems] = useState<ApiItem[]>([]);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [pressedId, setPressedId] = useState<number | null>(null);
-
   const hasMore = totalPages === null ? true : page < totalPages;
 
   const fetchPage = async (pageToLoad: number) => {
@@ -86,8 +77,14 @@ export default function TopRatedPage() {
 
   const handleSave = (item: ApiItem) => {
     const existing = getExistingItem(item.tmdbId);
-    if (existing) {
+    if (existing?.status === "watchlist") {
       dispatch({ type: "REMOVE_ITEM", payload: { id: existing.id } });
+      showToast("Removed from Watchlist");
+      return;
+    }
+    if (existing) {
+      dispatch({ type: "UPDATE_ITEM", payload: { ...existing, status: "watchlist" } });
+      showToast("Added to Watchlist");
       return;
     }
 
@@ -110,53 +107,14 @@ export default function TopRatedPage() {
 
   const renderCard = (item: ApiItem) => {
     const existing = getExistingItem(item.tmdbId);
-    const isSaved = Boolean(existing);
-    const posterUrl = item.posterPath
-      ? `${POSTER_BASE}${item.posterPath}`
-      : "https://via.placeholder.com/342x513?text=No+Poster";
-
-    const isPressed = pressedId === item.tmdbId;
     return (
-      <div
+      <DiscoveryCard
         key={`movie-${item.tmdbId}`}
-        className={`${homeStyles.card} transition-transform duration-150 ${
-          isPressed ? "scale-95" : ""
-        }`}
-      >
-        <Link href={`/movie/${item.tmdbId}`} className={homeStyles.cardLink}>
-          <div className={homeStyles.cardPoster}>
-            <Image
-              src={posterUrl}
-              alt={item.title}
-              fill
-              sizes="(max-width: 640px) 45vw, (max-width: 1024px) 22vw, 180px"
-              className={homeStyles.cardPosterImage}
-            />
-          </div>
-          <div className={homeStyles.cardInfo}>
-            <div className={homeStyles.cardTitle}>{item.title}</div>
-            <div className={homeStyles.cardMeta}>
-              <span>{formatYear(item.releaseDate)}</span>
-            </div>
-          </div>
-        </Link>
-        <div className={homeStyles.cardActions}>
-          <Button
-            type="button"
-            unstyled
-            className={`${homeStyles.saveButton} ${isSaved ? homeStyles.saved : ""}`}
-            onClick={() => {
-              setPressedId(item.tmdbId);
-              window.setTimeout(() => setPressedId(null), 120);
-              handleSave(item);
-            }}
-          >
-            <BookmarkPlus className={homeStyles.buttonIcon} />
-            {isSaved ? "Saved" : "Watchlist"}
-          </Button>
-          <span className={homeStyles.typeBadge}>Movie</span>
-        </div>
-      </div>
+        item={item}
+        isSaved={existing?.status === "watchlist"}
+        onOpen={() => router.push(`/movie/${item.tmdbId}`)}
+        onWatchlistAction={() => handleSave(item)}
+      />
     );
   };
 

@@ -1,0 +1,177 @@
+.card {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 18px;
+  background: rgba(18, 24, 41, 0.6);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    background-color 0.3s ease;
+}
+
+.card:hover {
+  z-index: 2;
+  transform: translateY(-5px);
+  background: rgba(18, 24, 41, 0.8);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.3);
+}
+
+.poster {
+  position: relative;
+  width: 100%;
+  padding-top: 150%;
+  overflow: hidden;
+  border-radius: 14px;
+}
+
+.posterButton {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.posterButton:focus-visible,
+.infoButton:focus-visible,
+.actionButton:focus-visible {
+  outline: 2px solid #93c5fd;
+  outline-offset: 3px;
+}
+
+.posterImage {
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.card:hover .posterImage {
+  transform: scale(1.025);
+}
+
+.typeBadge {
+  position: absolute;
+  z-index: 2;
+  top: 0.65rem;
+  right: 0.65rem;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.82);
+  color: #ffffff;
+  font-size: 0.7rem;
+  backdrop-filter: blur(8px);
+}
+
+.actions {
+  position: absolute;
+  z-index: 2;
+  right: 0.65rem;
+  bottom: 0.65rem;
+  display: flex;
+  gap: 0.45rem;
+}
+
+.actionButton {
+  display: inline-flex;
+  width: 2.25rem;
+  height: 2.25rem;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 50%;
+  padding: 0;
+  background: rgba(15, 23, 42, 0.86);
+  color: #ffffff;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.actionButton:hover:not(:disabled) {
+  transform: scale(1.08);
+}
+
+.actionButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.actionButton.active {
+  background: rgba(5, 206, 145, 0.9);
+  color: #0b2a1f;
+}
+
+.actionButton svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.infoButton {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.35rem;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.title {
+  min-width: 0;
+  overflow: hidden;
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  white-space: nowrap;
+  container-type: inline-size;
+}
+
+.titleText {
+  display: block;
+  width: max-content;
+  white-space: nowrap;
+}
+
+.card:hover .titleText {
+  animation: titlePingPong 3s ease-in-out infinite alternate;
+}
+
+@keyframes titlePingPong {
+  to {
+    transform: translateX(min(0px, calc(100cqi - 100%)));
+  }
+}
+
+.meta {
+  display: flex;
+  gap: 0.4rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.8rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .posterImage {
+    transition: none;
+  }
+
+  .card:hover {
+    transform: none;
+  }
+
+  .card:hover .titleText {
+    animation: none;
+  }
+}

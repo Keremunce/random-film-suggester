@@ -45,9 +45,10 @@ export const SelectValue = ({ placeholder }: SelectValueProps) => {
 
 type SelectContentProps = {
   children: React.ReactNode;
+  ariaLabel?: string;
 };
 
-export const SelectContent = ({ children }: SelectContentProps) => {
+export const SelectContent = ({ children, ariaLabel }: SelectContentProps) => {
   const context = useContext(SelectContext);
   if (!context) {
     throw new Error("SelectContent must be used within Select");
@@ -58,6 +59,7 @@ export const SelectContent = ({ children }: SelectContentProps) => {
       className={styles.select}
       value={context.value}
       onChange={(event) => context.onValueChange(event.target.value)}
+      aria-label={ariaLabel}
     >
       {children}
     </select>
