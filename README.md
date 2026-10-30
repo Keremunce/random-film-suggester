@@ -25,7 +25,7 @@ Your data stays in your browser.
 
 ## 🛠️ Tech Stack
 
-- Next.js 15 (App Router)
+- Next.js 16 (App Router)
 - TypeScript
 - TMDB API
 - Context API
