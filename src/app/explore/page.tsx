@@ -145,11 +145,11 @@ function ExplorePageContent() {
     );
   };
 
-  const getExistingItem = (tmdbId: number) =>
-    state.items.find((item) => item.tmdbId === tmdbId);
+  const getExistingItem = (tmdbId: number, type: "movie" | "tv" = "movie") =>
+    state.items.find((item) => item.tmdbId === tmdbId && item.type === type);
 
   const handleAddWatchlist = (item: MovieItem) => {
-    const existing = getExistingItem(item.tmdbId);
+    const existing = getExistingItem(item.tmdbId, item.type);
     if (existing) {
       if (existing.status === "watchlist") {
         showToast("Already in your list", "warning");
@@ -178,7 +178,7 @@ function ExplorePageContent() {
   };
 
   const handleAddWatched = (item: MovieItem) => {
-    const existing = getExistingItem(item.tmdbId);
+    const existing = getExistingItem(item.tmdbId, item.type);
     if (existing) {
       if (existing.status === "watched") {
         showToast("Already in your list", "warning");
@@ -302,13 +302,13 @@ function ExplorePageContent() {
         {searchResults.length > 0 && (
           <div className={styles.searchResults}>
             {searchResults.map((item) => {
-              const existing = getExistingItem(item.tmdbId);
+              const existing = getExistingItem(item.tmdbId, item.type);
               const isWatched = existing?.status === "watched";
               const isInWatchlist = existing?.status === "watchlist";
 
               return (
                 <SearchResult
-                  key={item.tmdbId}
+                  key={`${item.type}-${item.tmdbId}`}
                   tmdbId={item.tmdbId}
                   title={item.title}
                   type={item.type}
@@ -470,12 +470,12 @@ function ExplorePageContent() {
 
               return (
                 <div
-                  key={item.tmdbId}
+                  key={`${item.type}-${item.tmdbId}`}
                   className={`${styles.card} transition-transform duration-150 ${
                     pressedId === item.tmdbId ? "scale-95" : ""
                   }`}
                 >
-                  <Link href={`/movie/${item.tmdbId}`} className={styles.cardLink}>
+                  <Link href={`/detail/${item.type}/${item.tmdbId}`} className={styles.cardLink}>
                     <div className={styles.cardPoster}>
                       <Image
                         src={posterUrl}

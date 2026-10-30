@@ -58,23 +58,27 @@ const fetchJson = async (url: string) => {
   const res = await fetch(url, { cache: "no-store" });
   if (!res.ok) {
     const errorText = await res.text();
-    const err = new Error(`TMDB API error: ${res.status} - ${errorText}`);
-    // @ts-expect-error attach status
-    err.status = res.status;
-    throw err;
+    throw new Error(`TMDB API error: ${res.status} - ${errorText}`);
   }
   return res.json();
 };
 
 export async function GET(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const apiKey = getApiKey();
     const { id } = await params;
+    const mediaType = request.nextUrl.searchParams.get("media_type");
+    if (mediaType !== "movie" && mediaType !== "tv") {
+      return NextResponse.json(
+        { error: "A valid media_type query parameter is required" },
+        { status: 400 }
+      );
+    }
+    const apiKey = getApiKey();
 
-    try {
+    if (mediaType === "movie") {
       const data = (await fetchJson(
         `${BASE_URL}/movie/${id}?api_key=${apiKey}&append_to_response=credits`
       )) as TmdbMovieDetail;
@@ -100,12 +104,6 @@ export async function GET(
       };
 
       return NextResponse.json(normalized);
-    } catch (err) {
-      // @ts-expect-error read status
-      const status = err?.status;
-      if (status && status !== 404) {
-        throw err;
-      }
     }
 
     const tvData = (await fetchJson(

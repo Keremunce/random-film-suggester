@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useReducer, ReactNode, useEffect } from "react";
+import React, { createContext, useReducer, ReactNode, useEffect, useState } from "react";
 
 // Local storage key
 const STORAGE_KEY = "rfs_media_items";
@@ -59,6 +59,7 @@ const MovieProvider = ({ children }: { children: ReactNode }) => {
 	};
 
 	const [state, dispatch] = useReducer(movieReducer, initialState);
+	const [isHydrated, setIsHydrated] = useState(false);
 
 	// Load from localStorage on mount
 	useEffect(() => {
@@ -73,19 +74,21 @@ const MovieProvider = ({ children }: { children: ReactNode }) => {
 				dispatch({ type: "SET_ITEMS", payload: normalized });
 			}
 		} catch (err) {
-			// ignore parse errors
 			console.error("Failed to load media items from localStorage", err);
+		} finally {
+			setIsHydrated(true);
 		}
 	}, []);
 
 	// Persist items to localStorage whenever they change
 	useEffect(() => {
+		if (!isHydrated) return;
 		try {
 			localStorage.setItem(STORAGE_KEY, JSON.stringify(state.items));
 		} catch (err) {
 			console.error("Failed to save media items to localStorage", err);
 		}
-	}, [state.items]);
+	}, [isHydrated, state.items]);
 
 	return <MovieContext.Provider value={{ state, dispatch }}>{children}</MovieContext.Provider>;
 };

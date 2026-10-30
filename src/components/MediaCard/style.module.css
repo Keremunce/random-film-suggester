@@ -66,6 +66,11 @@
   object-fit: cover;
 }
 
+.posterLink {
+  position: absolute;
+  inset: 0;
+}
+
 .openButton {
   border: none;
   background: transparent;

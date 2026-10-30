@@ -70,10 +70,12 @@ export default function SettingsPage() {
     try {
       const imported = await importUtils.fromJSON(file);
 
-      // Merge with existing items, avoiding duplicates by tmdbId
-      const existingIds = new Set(state.items.map((item) => item.tmdbId));
+      // TMDB IDs can collide between movies and TV series.
+      const existingItems = new Set(
+        state.items.map((item) => `${item.type}:${item.tmdbId}`),
+      );
       const newItems = imported.filter(
-        (item) => !existingIds.has(item.tmdbId)
+        (item) => !existingItems.has(`${item.type}:${item.tmdbId}`)
       );
 
       // Add all new items

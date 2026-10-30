@@ -91,7 +91,7 @@ export default function SuggestMePage() {
 								Suggest another
 							</button>
 							<Link
-								href={`/movie/${suggestion.tmdbId}`}
+								href={`/detail/${suggestion.type}/${suggestion.tmdbId}`}
 								className={styles.detailLink}
 							>
 								Open detail

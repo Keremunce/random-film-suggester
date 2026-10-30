@@ -243,11 +243,11 @@ export default function HomePage() {
     };
   }, [watchlistMovieIds]);
 
-  const getExistingItem = (tmdbId: number) =>
-    state.items.find((item) => item.tmdbId === tmdbId);
+  const getExistingItem = (tmdbId: number, type: "movie" | "tv") =>
+    state.items.find((item) => item.tmdbId === tmdbId && item.type === type);
 
   const handleSave = (item: MediaItem) => {
-    const existing = getExistingItem(item.tmdbId);
+    const existing = getExistingItem(item.tmdbId, item.type);
     if (existing) {
       dispatch({ type: "REMOVE_ITEM", payload: { id: existing.id } });
       return;
@@ -271,7 +271,7 @@ export default function HomePage() {
   };
 
   const renderCard = (item: MediaItem) => {
-    const existing = getExistingItem(item.tmdbId);
+    const existing = getExistingItem(item.tmdbId, item.type);
     const isSaved = Boolean(existing);
     const posterUrl = item.posterPath
       ? `${POSTER_BASE}${item.posterPath}`

@@ -15,7 +15,6 @@ import {
 } from "@/utils/sortMovies";
 import { SegmentedControl } from "@/components/SegmentedControl";
 import { Select, SelectContent, SelectItem, SelectLabel } from "@/components/ui/select";
-import { MovieDetailSheet } from "@/components/MovieDetailSheet";
 import styles from "./style.module.css";
 
 const SUGGESTION_STORAGE_KEY = "myList:suggestedMovie";
@@ -46,7 +45,6 @@ export default function MyListPage() {
   const [suggestedAt, setSuggestedAt] = useState<number | null>(null);
   const [diceAnimating, setDiceAnimating] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const [selectedItem, setSelectedItem] = useState<MediaItem | null>(null);
   const confettiTimerRef = useRef<NodeJS.Timeout | null>(null);
   const diceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -554,7 +552,6 @@ export default function MyListPage() {
               selectable
               selected={selectedIds.has(item.id)}
               onSelectChange={(checked) => handleSelectChange(item.id, checked)}
-              onOpenDetail={setSelectedItem}
             />
           ))}
         </div>
@@ -594,11 +591,6 @@ export default function MyListPage() {
         </div>
       </div>
 
-      <MovieDetailSheet
-        movie={selectedItem}
-        open={Boolean(selectedItem)}
-        onClose={() => setSelectedItem(null)}
-      />
     </div>
   );
 }

@@ -121,10 +121,7 @@ export const MovieDetailSheet = ({ movie, open, onClose }: MovieDetailSheetProps
       try {
         setLoading(true);
         setError(null);
-        const endpoint =
-          movie.type === "movie"
-            ? `/api/movie/${movie.tmdbId}`
-            : `/api/media/${movie.tmdbId}`;
+        const endpoint = `/api/media-detail/${movie.type}/${movie.tmdbId}`;
         const res = await fetch(endpoint);
         if (!res.ok) throw new Error("Failed to load detail");
         const data = (await res.json()) as MovieDetailApi | MediaDetailApi;
@@ -155,7 +152,9 @@ export const MovieDetailSheet = ({ movie, open, onClose }: MovieDetailSheetProps
 
   const existing = useMemo(() => {
     if (!detail) return undefined;
-    return state.items.find((item) => item.tmdbId === detail.tmdbId);
+    return state.items.find(
+      (item) => item.tmdbId === detail.tmdbId && item.type === detail.type,
+    );
   }, [detail, state.items]);
 
   const handleAdd = (status: "watchlist" | "watched") => {

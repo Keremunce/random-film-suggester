@@ -2,6 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { MediaItem } from "@/app/context/MovieContext";
 import { StarRating } from "@/components/StarRating";
 import { Button } from "@/components/ui/button";
@@ -13,7 +14,6 @@ interface MediaCardProps {
   item: MediaItem;
   onUpdate: (item: MediaItem) => void;
   onRemove: (id: string) => void;
-  onOpenDetail?: (item: MediaItem) => void;
   selectable?: boolean;
   selected?: boolean;
   onSelectChange?: (checked: boolean) => void;
@@ -25,7 +25,6 @@ export const MediaCard: React.FC<MediaCardProps> = ({
   item,
   onUpdate,
   onRemove,
-  onOpenDetail,
   selectable = false,
   selected = false,
   onSelectChange,
@@ -45,30 +44,12 @@ export const MediaCard: React.FC<MediaCardProps> = ({
 
   return (
     <div className={styles.card}>
-      <div
-        role="button"
-        tabIndex={0}
-        className={styles.openButton}
-        onClick={() => onOpenDetail?.(item)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            onOpenDetail?.(item);
-          }
-        }}
-      >
-        <div className={styles.poster}>
-          {selectable && (
-            <label className={styles.selectBox}>
-              <input
-                type="checkbox"
-                className={styles.selectInput}
-                checked={selected}
-                onChange={(e) => onSelectChange?.(e.target.checked)}
-                aria-label={`Select ${item.title}`}
-              />
-            </label>
-          )}
+      <div className={styles.poster}>
+        <Link
+          href={`/detail/${item.type}/${item.tmdbId}`}
+          className={styles.posterLink}
+          aria-label={`Open details for ${item.title}`}
+        >
           <Image
             src={posterUrl}
             alt={item.title}
@@ -76,8 +57,20 @@ export const MediaCard: React.FC<MediaCardProps> = ({
             sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 200px"
             className={styles.posterImage}
           />
-        </div>
-
+        </Link>
+        {selectable && (
+          <label className={styles.selectBox}>
+            <input
+              type="checkbox"
+              className={styles.selectInput}
+              checked={selected}
+              onChange={(e) => onSelectChange?.(e.target.checked)}
+              aria-label={`Select ${item.title}`}
+            />
+          </label>
+        )}
+      </div>
+      <Link href={`/detail/${item.type}/${item.tmdbId}`} className={styles.openButton}>
         <div className={styles.content}>
           <h3 className={styles.title}>{item.title}</h3>
 
@@ -89,11 +82,10 @@ export const MediaCard: React.FC<MediaCardProps> = ({
               {item.releaseDate ? new Date(item.releaseDate).getFullYear() : "N/A"}
             </span>
           </p>
-
-          <div className={styles.rating}>
-            <StarRating value={item.rating} onChange={handleRatingChange} size="sm" />
-          </div>
         </div>
+      </Link>
+      <div className={styles.rating}>
+        <StarRating value={item.rating} onChange={handleRatingChange} size="sm" />
       </div>
 
       <div className={styles.actions}>

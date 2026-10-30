@@ -3,7 +3,7 @@ import { MediaItem } from "@/app/context/MovieContext";
 export const importUtils = {
   /**
    * Import JSON file and merge with existing items
-   * Avoids duplicates based on tmdbId
+   * Identifies media by its type and TMDB ID
    */
   fromJSON: async (file: File): Promise<MediaItem[]> => {
     return new Promise((resolve, reject) => {
