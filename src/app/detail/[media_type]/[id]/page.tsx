@@ -6,7 +6,9 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { MovieContext } from "@/app/context/MovieContext";
 import { Button } from "@/components/ui/button";
-import { BookmarkPlus, CheckCircle, Trash } from "lucide-react";
+import { BookmarkSimple } from "@phosphor-icons/react/dist/csr/BookmarkSimple";
+import { CheckCircle } from "@phosphor-icons/react/dist/csr/CheckCircle";
+import { Trash } from "@phosphor-icons/react/dist/csr/Trash";
 import { StarRating } from "@/components/StarRating";
 import styles from "./style.module.css";
 
@@ -35,11 +37,22 @@ type MovieDetail = {
 
 const POSTER_BASE = "https://image.tmdb.org/t/p/w500";
 const BACKDROP_BASE = "https://image.tmdb.org/t/p/w1280";
-const PROFILE_BASE = "https://image.tmdb.org/t/p/w185";
+const PROFILE_BASE = "https://image.tmdb.org/t/p/w500";
 const PROVIDER_BASE = "https://image.tmdb.org/t/p/w92";
 
 const generateId = () =>
   `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
+const formatDate = (value: string | null | undefined) => {
+  if (!value) return null;
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return null;
+  return [
+    String(date.getDate()).padStart(2, "0"),
+    String(date.getMonth() + 1).padStart(2, "0"),
+    date.getFullYear(),
+  ].join("/");
+};
 
 export default function MediaDetailPage() {
   const params = useParams<{ media_type: string; id: string }>();
@@ -189,7 +202,7 @@ export default function MediaDetailPage() {
                   </>
                 ) : (
                   <>
-                    <BookmarkPlus className={styles.buttonIcon} />
+                    <BookmarkSimple className={styles.buttonIcon} />
                     Save to Watchlist
                   </>
                 )}
@@ -231,6 +244,22 @@ export default function MediaDetailPage() {
             </div>
           )}
 
+          {existing && (
+            <div className={styles.savedDates}>
+              <p className={styles.savedDate}>
+                <span>Added to list</span>
+                <strong>{formatDate(existing.addedAt) ?? "Unknown"}</strong>
+              </p>
+              <p className={styles.savedDate}>
+                <span>Marked watched</span>
+                <strong>
+                  {formatDate(existing.watchedAt) ??
+                    (existing.status === "watched" ? "Unknown" : "Not watched")}
+                </strong>
+              </p>
+            </div>
+          )}
+
           <div className={styles.ratingBlock}>
             <p className={styles.label}>Your Rating</p>
             {existing ? (
@@ -260,6 +289,7 @@ export default function MediaDetailPage() {
                     alt={member.name}
                     width={120}
                     height={180}
+                    sizes="(max-width: 640px) 40vw, (max-width: 900px) 25vw, 180px"
                     className={styles.castImage}
                   />
                   <div>

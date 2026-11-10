@@ -30,14 +30,17 @@ export const importUtils = {
                 typeof item.title === "string" &&
                 (item.status === "watched" || item.status === "watchlist") &&
                 (item.rating === null || typeof item.rating === "number") &&
-                typeof item.addedAt === "string"
+                typeof item.addedAt === "string" &&
+                (item.watchedAt === undefined ||
+                  item.watchedAt === null ||
+                  typeof item.watchedAt === "string")
             );
 
             if (!isValid) {
               throw new Error("Invalid file structure: missing required fields");
             }
 
-            resolve(items);
+            resolve(items.map((item) => ({ ...item, watchedAt: item.watchedAt ?? null })));
           } catch (err) {
             const msg = err instanceof Error ? err.message : "Failed to parse JSON";
             reject(new Error(msg));

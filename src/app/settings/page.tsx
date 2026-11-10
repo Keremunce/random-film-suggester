@@ -2,7 +2,9 @@
 
 import React, { useContext, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Film, Tv, UploadCloud } from "lucide-react";
+import { FilmStrip } from "@phosphor-icons/react/dist/csr/FilmStrip";
+import { Television } from "@phosphor-icons/react/dist/csr/Television";
+import { UploadSimple } from "@phosphor-icons/react/dist/csr/UploadSimple";
 import { MovieContext } from "@/app/context/MovieContext";
 import { StatusModal } from "@/components/StatusModal";
 import { exportUtils } from "@/utils/export";
@@ -168,14 +170,14 @@ export default function SettingsPage() {
                 onClick={() => handleExport("json", "movies")}
                 className={`${styles.btn} ${styles.btnSecondary}`}
               >
-                <Film aria-hidden="true" />
+                <FilmStrip aria-hidden="true" />
                 Movies Only
               </button>
               <button
                 onClick={() => handleExport("json", "series")}
                 className={`${styles.btn} ${styles.btnSecondary}`}
               >
-                <Tv aria-hidden="true" />
+                <Television aria-hidden="true" />
                 Series Only
               </button>
             </div>
@@ -195,14 +197,14 @@ export default function SettingsPage() {
                 onClick={() => handleExport("csv", "movies")}
                 className={`${styles.btn} ${styles.btnSecondary}`}
               >
-                <Film aria-hidden="true" />
+                <FilmStrip aria-hidden="true" />
                 Movies Only
               </button>
               <button
                 onClick={() => handleExport("csv", "series")}
                 className={`${styles.btn} ${styles.btnSecondary}`}
               >
-                <Tv aria-hidden="true" />
+                <Television aria-hidden="true" />
                 Series Only
               </button>
             </div>
@@ -226,7 +228,7 @@ export default function SettingsPage() {
           />
           <label htmlFor="file-input" className={styles.uploadLabel}>
             <span className={styles.icon} aria-hidden="true">
-              <UploadCloud />
+              <UploadSimple />
             </span>
             <span className={styles.text}>
               Click to select JSON file or drag and drop

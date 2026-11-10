@@ -1,11 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useId, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { MediaItem } from "@/app/context/MovieContext";
 import { StarRating } from "@/components/StarRating";
-import { Eye, EyeOff, Star, Trash } from "lucide-react";
+import { CalendarBlank } from "@phosphor-icons/react/dist/csr/CalendarBlank";
+import { Eye } from "@phosphor-icons/react/dist/csr/Eye";
+import { EyeSlash } from "@phosphor-icons/react/dist/csr/EyeSlash";
+import { Star } from "@phosphor-icons/react/dist/csr/Star";
+import { Trash } from "@phosphor-icons/react/dist/csr/Trash";
 import styles from "./style.module.css";
 
 interface MediaCardProps {
@@ -28,6 +32,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({
   onSelectChange,
 }) => {
   const [ratingOpen, setRatingOpen] = useState(false);
+  const dateTooltipId = useId();
 
   const handleStatusToggle = () => {
     const newStatus = item.status === "watched" ? "watchlist" : "watched";
@@ -42,6 +47,18 @@ export const MediaCard: React.FC<MediaCardProps> = ({
   const posterUrl = item.posterPath
     ? `${POSTER_BASE}${item.posterPath}`
     : "https://via.placeholder.com/500x750?text=No+Poster";
+  const formatDate = (value: string | null) => {
+    if (!value) return null;
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return null;
+    return [
+      String(date.getDate()).padStart(2, "0"),
+      String(date.getMonth() + 1).padStart(2, "0"),
+      date.getFullYear(),
+    ].join("/");
+  };
+  const addedDate = formatDate(item.addedAt);
+  const watchedDate = formatDate(item.watchedAt);
 
   return (
     <div className={styles.card}>
@@ -68,7 +85,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({
             aria-label={item.status === "watched" ? "Mark as unwatched" : "Mark as watched"}
           >
             {item.status === "watched" ? (
-              <EyeOff aria-hidden="true" />
+              <EyeSlash aria-hidden="true" />
             ) : (
               <Eye aria-hidden="true" />
             )}
@@ -94,6 +111,26 @@ export const MediaCard: React.FC<MediaCardProps> = ({
             />
           </label>
         )}
+        <button
+          type="button"
+          className={styles.dateInfo}
+          aria-label={`Show dates for ${item.title}`}
+          aria-describedby={dateTooltipId}
+        >
+          <CalendarBlank aria-hidden="true" />
+        </button>
+        <span id={dateTooltipId} className={styles.dateTooltip} role="tooltip">
+          <span className={styles.dateTooltipRow}>
+            <span className={styles.dateTooltipLabel}>Added to list</span>
+            <span className={styles.dateTooltipValue}>{addedDate ?? "Unknown"}</span>
+          </span>
+          <span className={styles.dateTooltipRow}>
+            <span className={styles.dateTooltipLabel}>Marked watched</span>
+            <span className={styles.dateTooltipValue}>
+              {watchedDate ?? (item.status === "watched" ? "Unknown" : "Not watched")}
+            </span>
+          </span>
+        </span>
       </div>
       <div className={styles.content}>
         <Link href={`/detail/${item.type}/${item.tmdbId}`} className={styles.openButton}>

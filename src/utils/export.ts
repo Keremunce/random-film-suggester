@@ -35,7 +35,7 @@ export const exportUtils = {
             filterType === "movies" ? item.type === "movie" : item.type === "tv"
           );
 
-    const headers = ["title", "type", "status", "rating", "releaseDate", "addedAt"];
+    const headers = ["title", "type", "status", "rating", "releaseDate", "addedAt", "watchedAt"];
     const rows = filtered.map((item) => [
       `"${item.title.replace(/"/g, '""')}"`, // Escape quotes in title
       item.type,
@@ -43,6 +43,7 @@ export const exportUtils = {
       item.rating ?? "",
       item.releaseDate ?? "",
       item.addedAt,
+      item.watchedAt ?? "",
     ]);
 
     const csv = [headers.join(","), ...rows.map((row) => row.join(","))].join("\n");

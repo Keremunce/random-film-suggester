@@ -4,7 +4,10 @@ import React from "react";
 import Image from "next/image";
 import { StarRating } from "@/components/StarRating";
 import { Button } from "@/components/ui/button";
-import { BookmarkPlus, CheckCircle } from "lucide-react";
+import { BookmarkSimple } from "@phosphor-icons/react/dist/csr/BookmarkSimple";
+import { CheckCircle } from "@phosphor-icons/react/dist/csr/CheckCircle";
+import { FilmStrip } from "@phosphor-icons/react/dist/csr/FilmStrip";
+import { Television } from "@phosphor-icons/react/dist/csr/Television";
 import styles from "./style.module.css";
 
 interface SearchResultProps {
@@ -81,7 +84,14 @@ export const SearchResult: React.FC<SearchResultProps> = ({
           </div>
           {overview && <p className={styles.description}>{overview}</p>}
           <p className={styles.meta}>
-            <span className={styles.badge}>{type === "movie" ? "🎬 Movie" : "📺 Series"}</span>
+            <span className={styles.badge}>
+              {type === "movie" ? (
+                <FilmStrip aria-hidden="true" />
+              ) : (
+                <Television aria-hidden="true" />
+              )}
+              {type === "movie" ? "Movie" : "Series"}
+            </span>
             <span className={styles.year}>{year}</span>
           </p>
         </div>
@@ -95,7 +105,7 @@ export const SearchResult: React.FC<SearchResultProps> = ({
           aria-label={isAdded ? `Remove ${title} from watchlist` : `Add ${title} to watchlist`}
           title={isAdded ? "Remove from watchlist" : "Add to watchlist"}
         >
-          <BookmarkPlus className={styles.buttonIcon} />
+          <BookmarkSimple className={styles.buttonIcon} />
           {isAdded ? "Remove" : "Watchlist"}
         </Button>
         {onAddWatched && (

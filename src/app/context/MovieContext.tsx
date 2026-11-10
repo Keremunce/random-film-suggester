@@ -16,6 +16,7 @@ export type MediaItem = {
 	status: "watched" | "watchlist";
 	rating: number | null;
 	addedAt: string; // ISO date
+	watchedAt: string | null; // ISO date
 };
 
 // State tipi
@@ -26,7 +27,7 @@ interface MovieState {
 // Action tipi
 type MovieAction =
 	| { type: "SET_ITEMS"; payload: MediaItem[] }
-	| { type: "ADD_ITEM"; payload: MediaItem }
+	| { type: "ADD_ITEM"; payload: Omit<MediaItem, "watchedAt"> & { watchedAt?: string | null } }
 	| { type: "REMOVE_ITEM"; payload: { id: string } }
 	| { type: "UPDATE_ITEM"; payload: MediaItem };
 
@@ -34,13 +35,48 @@ type MovieAction =
 const movieReducer = (state: MovieState, action: MovieAction): MovieState => {
 	switch (action.type) {
 		case "SET_ITEMS":
-			return { ...state, items: action.payload };
+			return {
+				...state,
+				items: action.payload.map((item) => ({
+					...item,
+					addedAt: item.addedAt ?? new Date().toISOString(),
+					watchedAt: item.watchedAt ?? null,
+				})),
+			};
 		case "ADD_ITEM":
-			return { ...state, items: [action.payload, ...state.items] };
+			return {
+				...state,
+				items: [
+					{
+						...action.payload,
+						watchedAt:
+							action.payload.status === "watched"
+								? action.payload.watchedAt ?? action.payload.addedAt
+								: null,
+					},
+					...state.items,
+				],
+			};
 		case "REMOVE_ITEM":
 			return { ...state, items: state.items.filter((i) => i.id !== action.payload.id) };
-		case "UPDATE_ITEM":
-			return { ...state, items: state.items.map((i) => (i.id === action.payload.id ? action.payload : i)) };
+		case "UPDATE_ITEM": {
+			const existing = state.items.find((item) => item.id === action.payload.id);
+			const watchedAt =
+				action.payload.status === "watched"
+					? existing?.status !== "watched"
+						? new Date().toISOString()
+						: action.payload.watchedAt ?? existing.watchedAt ?? null
+					: null;
+
+			return {
+				...state,
+				items: state.items.map((item) =>
+					item.id === action.payload.id
+						? { ...action.payload, watchedAt }
+						: item,
+				),
+			};
+		}
 		default:
 			return state;
 	}
@@ -71,6 +107,7 @@ const MovieProvider = ({ children }: { children: ReactNode }) => {
 				const normalized = parsed.map((item) => ({
 					...item,
 					addedAt: item.addedAt ?? new Date().toISOString(),
+					watchedAt: item.watchedAt ?? null,
 				}));
 				dispatch({ type: "SET_ITEMS", payload: normalized });
 			}

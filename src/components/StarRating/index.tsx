@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { Star } from "@phosphor-icons/react/dist/csr/Star";
 import styles from "./style.module.css";
 
 interface StarRatingProps {
@@ -51,7 +52,7 @@ export const StarRating: React.FC<StarRatingProps> = ({
           role="radio"
           aria-checked={value === star}
         >
-          ★
+          <Star weight={star <= (displayRating ?? 0) ? "fill" : "regular"} aria-hidden="true" />
         </button>
       ))}
     </div>

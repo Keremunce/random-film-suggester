@@ -26,6 +26,12 @@
     color: #ffb800;
   }
 
+  .star svg {
+    display: block;
+    width: 1em;
+    height: 1em;
+  }
+
   &:disabled {
     cursor: not-allowed;
   }

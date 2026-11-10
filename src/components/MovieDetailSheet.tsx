@@ -2,7 +2,10 @@
 
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
-import { ArrowLeft, BookmarkPlus, CheckCircle, Trash } from "lucide-react";
+import { ArrowLeft } from "@phosphor-icons/react/dist/csr/ArrowLeft";
+import { BookmarkSimple } from "@phosphor-icons/react/dist/csr/BookmarkSimple";
+import { CheckCircle } from "@phosphor-icons/react/dist/csr/CheckCircle";
+import { Trash } from "@phosphor-icons/react/dist/csr/Trash";
 import { MovieContext } from "@/app/context/MovieContext";
 import { StarRating } from "@/components/StarRating";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
@@ -263,7 +266,7 @@ export const MovieDetailSheet = ({ movie, open, onClose }: MovieDetailSheetProps
                   </>
                 ) : (
                   <>
-                    <BookmarkPlus className={styles.buttonIcon} />
+                    <BookmarkSimple className={styles.buttonIcon} />
                     Save to Watchlist
                   </>
                 )}

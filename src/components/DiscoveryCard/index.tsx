@@ -2,7 +2,8 @@
 
 import React from "react";
 import Image from "next/image";
-import { BookmarkPlus, CheckCircle } from "lucide-react";
+import { BookmarkSimple } from "@phosphor-icons/react/dist/csr/BookmarkSimple";
+import { CheckCircle } from "@phosphor-icons/react/dist/csr/CheckCircle";
 import styles from "./style.module.css";
 
 export type DiscoveryCardItem = {
@@ -73,7 +74,7 @@ export const DiscoveryCard: React.FC<DiscoveryCardProps> = ({
                 : `Add ${item.title} to watchlist`
             }
           >
-            <BookmarkPlus aria-hidden="true" />
+            <BookmarkSimple aria-hidden="true" />
           </button>
           {onMarkWatched && (
             <button
